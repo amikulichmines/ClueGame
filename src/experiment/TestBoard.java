@@ -9,7 +9,7 @@ public class TestBoard {
 	 * This class contains the board (the grid of TestBoardCell objects).
 	 */
 	
-	private ArrayList<ArrayList<TestBoardCell>> board;
+	private ArrayList<ArrayList<TestBoardCell>> board = new ArrayList<ArrayList<TestBoardCell>>();
 	private Set<TestBoardCell> targets;
 	
 	public TestBoard(int h, int w){
@@ -27,7 +27,7 @@ public class TestBoard {
 	
 	
 	public void calcTargets(TestBoardCell startCell, int pathlength) {
-		
+		targets = new TreeSet<TestBoardCell>();
 	}
 	
 	public Set<TestBoardCell> getTargets(){
