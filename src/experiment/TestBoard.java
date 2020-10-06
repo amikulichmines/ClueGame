@@ -1,5 +1,6 @@
 package experiment;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -8,14 +9,14 @@ public class TestBoard {
 	 * This class contains the board (the grid of TestBoardCell objects).
 	 */
 	
-	private Set<Set<TestBoardCell>> board;
+	private ArrayList<ArrayList<TestBoardCell>> board;
 	private Set<TestBoardCell> targets;
 	
 	public TestBoard(int h, int w){
-		Set<TestBoardCell> row;
+		ArrayList<TestBoardCell> row;
 		TestBoardCell cell;
 		for(int r=0; r<h; r++) { 		// rows
-			row = new TreeSet<TestBoardCell>();
+			row = new ArrayList<TestBoardCell>();
 			for(int c=0; c<w; c++){ 	// columns
 				cell = new TestBoardCell(r,c); 
 				row.add(cell);
@@ -23,6 +24,7 @@ public class TestBoard {
 			board.add(row);
 		}
 	}
+	
 	
 	public void calcTargets(TestBoardCell startCell, int pathlength) {
 		
@@ -32,7 +34,6 @@ public class TestBoard {
 		return targets;
 	}
 	public TestBoardCell getCell(int row, int col) {
-		return null;
-		
+		return board.get(row).get(col);		
 	}
 }
