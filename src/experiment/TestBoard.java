@@ -2,7 +2,7 @@ package experiment;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 
 public class TestBoard {
 	/*
@@ -27,7 +27,7 @@ public class TestBoard {
 	
 	
 	public void calcTargets(TestBoardCell startCell, int pathlength) {
-		targets = new TreeSet<TestBoardCell>();
+		targets = new HashSet<TestBoardCell>();
 	}
 	
 	public Set<TestBoardCell> getTargets(){

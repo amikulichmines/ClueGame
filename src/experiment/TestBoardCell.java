@@ -1,7 +1,7 @@
 package experiment;
 
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 
 public class TestBoardCell {
 	/*
@@ -11,7 +11,7 @@ public class TestBoardCell {
 	private int col;
 	private boolean isOccupied = false;
 	private boolean isRoom = false;
-	private Set<TestBoardCell> adjList = new TreeSet<TestBoardCell>();
+	public Set<TestBoardCell> adjList = new HashSet<TestBoardCell>();
 
 	public TestBoardCell(int row, int col) {
 		// TODO 
@@ -21,8 +21,6 @@ public class TestBoardCell {
 	}
 	
 	public Set<TestBoardCell> getAdjList() {
-		TestBoardCell cell = new TestBoardCell(2,2);
-		adjList.add(cell);
 		return adjList;
 		// TODO returns the adjacency list for the cell
 	}
