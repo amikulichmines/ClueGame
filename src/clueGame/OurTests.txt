@@ -1,0 +1,11 @@
+We wrote some tests to find the door directions for the conservatory, attic, pantry, and basement.
+These are rooms that each have a different direction to enter. The conservatory is left, the attic is up, the 
+pantry is right, and the basement is down. We also have two cells tested in FourDoorDirections() that test for 
+hallway spaces. 
+
+We also have tests to find the secret passages. For our board, the attic and basement have a passage to each other,
+so those cells  are tested to make sure they connect to the right destination. Likewise, the Eating Room and Literature
+Room are connected by passage ways, so there is a cell in each that will be tested. 
+
+We also have tests for two unused space cells, testing if they were labeled as unused and had no name or label 
+attributes.
