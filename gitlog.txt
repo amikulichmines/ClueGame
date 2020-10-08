@@ -1,0 +1,31 @@
+Used Saros for pair programming, so no commits from Sterling
+
+commit 8583f6e221e79c6a823fbf8724c2ffc9c1bfeabe
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Mon Oct 5 20:23:19 2020 -0600
+
+    Fixed the tests and changed sets to hashsets
+
+commit e7c20f735ffc4e779e25da0ba46f87756c2e4c4b
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Mon Oct 5 20:00:18 2020 -0600
+
+    Finished the tests
+
+commit fd8d74ba300ec5fe6292359b2e7061531e7ef605
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Mon Oct 5 18:44:19 2020 -0600
+
+    Finished up TestBoard and TestBoardCell with stubs
+
+commit 7e901dfda444ee3f251d2e82c49f3fdd800f6237
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Mon Oct 5 16:57:53 2020 -0600
+
+    Added testBoard and testBoardCell classes
+
+commit b2ab6538ffd3c8d933cf01d217c4c62910a1718d
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Mon Oct 5 16:13:13 2020 -0600
+
+    First commit

@@ -1,0 +1,13 @@
+﻿// Rooms and room cards
+Room, Cookplace, C
+Room, Attic, A
+Room, Basement, B
+Room, Literature Room, L
+Room, Eating Room, D
+Room, Game Room, G
+Room, Observatory, O
+Room, Pantry, P
+Room, Foyer, F
+// Other spaces on the board
+Space, Hallway, H
+Space, Unused, X
