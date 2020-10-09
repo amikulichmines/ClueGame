@@ -18,7 +18,7 @@ public class BoardTestExp {
 	
 	@BeforeEach
 	public void setup() {
-		board = new TestBoard(4,4);
+		board = new TestBoard();
 	}
 	
 	/*
@@ -28,7 +28,6 @@ public class BoardTestExp {
 	
 	@Test
 	public void testTopLeft() {
-		board = board;
 		TestBoardCell cell = board.getCell(0, 0);
 		Set<TestBoardCell> testList = cell.getAdjList();
 		cell = board.getCell(1,0);
@@ -36,7 +35,7 @@ public class BoardTestExp {
 		assertTrue(testList.contains(board.getCell(1,0)));
 		assertTrue(testList.contains(board.getCell(0,1)));
 		assertEquals(2,testList.size());
-	}	
+	}
 	
 	@Test
 	public void testBottomRight() {
@@ -84,11 +83,11 @@ public class BoardTestExp {
 	public void testPathlengthOneFromCenter() {
 		// 2,2
 		Set<TestBoardCell> expectedTargets = new HashSet<TestBoardCell>();
-		board.calcTargets(new TestBoardCell(2,2), 1);
-		expectedTargets.add(new TestBoardCell(1,2));
-		expectedTargets.add(new TestBoardCell(3,2));
-		expectedTargets.add(new TestBoardCell(2,1));
-		expectedTargets.add(new TestBoardCell(2,3));
+		board.calcTargets(board.getCell(2,2), 1);
+		expectedTargets.add(board.getCell(1,2));
+		expectedTargets.add(board.getCell(3,2));
+		expectedTargets.add(board.getCell(2,1));
+		expectedTargets.add(board.getCell(2,3));
 		Set<TestBoardCell> actualTargets = board.getTargets();
 		assertEquals(expectedTargets,actualTargets);
 		
@@ -98,9 +97,9 @@ public class BoardTestExp {
 	public void testPathlengthOneFromCorner() {
 		// 0,0
 		Set<TestBoardCell> expectedTargets = new HashSet<TestBoardCell>();
-		board.calcTargets(new TestBoardCell(0,0), 1);
-		expectedTargets.add(new TestBoardCell(1,0));
-		expectedTargets.add(new TestBoardCell(0,1));
+		board.calcTargets(board.getCell(0, 0), 1);
+		expectedTargets.add(board.getCell(1,0));
+		expectedTargets.add(board.getCell(0,1));
 		Set<TestBoardCell> actualTargets = board.getTargets();
 		assertEquals(expectedTargets,actualTargets);
 	}
@@ -110,9 +109,9 @@ public class BoardTestExp {
 		// 0,0
 		Set<TestBoardCell> expectedTargets = new HashSet<TestBoardCell>();
 		board.calcTargets(board.getCell(0, 0), 2);
-		expectedTargets.add(new TestBoardCell(0,2));
-		expectedTargets.add(new TestBoardCell(1,1));
-		expectedTargets.add(new TestBoardCell(2,0));
+		expectedTargets.add(board.getCell(0,2));
+		expectedTargets.add(board.getCell(1,1));
+		expectedTargets.add(board.getCell(2,0));
 		Set<TestBoardCell> actualTargets = board.getTargets();
 		assertEquals(expectedTargets, actualTargets);
 	}
@@ -121,9 +120,10 @@ public class BoardTestExp {
 	public void testPathlengthOneFromCornerWithOccupiedSpace() {
 		// 0,0
 		// Also assume space (0,1) is occupied
+		board.getCell(0, 1).setOccupied(true);;
 		Set<TestBoardCell> expectedTargets = new HashSet<TestBoardCell>();
-		board.calcTargets(new TestBoardCell(0,0), 1);
-		expectedTargets.add(new TestBoardCell(1,0));
+		board.calcTargets(board.getCell(0,0), 1);
+		expectedTargets.add(board.getCell(1,0));
 		Set<TestBoardCell> actualTargets = board.getTargets();
 		assertEquals(expectedTargets,actualTargets);
 	}
@@ -132,13 +132,13 @@ public class BoardTestExp {
 	public void testPathlengthTwoFromCornerWithRoom() {
 		// 0,0
 		// Assume (0,1), (0,2) and (0,3) is a room and door is at (0,1)
-		
 		Set<TestBoardCell> expectedTargets = new HashSet<TestBoardCell>();
-		board.calcTargets(new TestBoardCell(0,0), 1);
-		expectedTargets.add(new TestBoardCell(1,0));
-		expectedTargets.add(new TestBoardCell(0,1));
-		expectedTargets.add(new TestBoardCell(1,1));
-		expectedTargets.add(new TestBoardCell(2,0));
+		board.getCell(0, 1).setRoom(true);
+		board.getCell(0, 2).setRoom(true);
+		board.getCell(0, 3).setRoom(true);
+		board.calcTargets(board.getCell(0,0), 2);
+		expectedTargets.add(board.getCell(1,1));
+		expectedTargets.add(board.getCell(2,0));
 		Set<TestBoardCell> actualTargets = board.getTargets();
 		assertEquals(expectedTargets,actualTargets);
 	}

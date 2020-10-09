@@ -25,6 +25,10 @@ public class TestBoardCell {
 		// TODO returns the adjacency list for the cell
 	}
 	
+	public void setAdjList(Set<TestBoardCell> adjList) {
+		this.adjList= adjList;
+	}
+	
 	public void setRoom(boolean isRoom) {
 		this.isRoom = isRoom;
 	}
