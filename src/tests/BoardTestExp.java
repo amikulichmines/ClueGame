@@ -76,6 +76,7 @@ public class BoardTestExp {
 		assertTrue(testList.contains(board.getCell(2,3)));
 		assertEquals(4,testList.size());
 	}
+	
 	/*
 	 * The five following tests
 	 */
@@ -119,7 +120,7 @@ public class BoardTestExp {
 	@Test
 	public void testPathlengthOneFromCornerWithOccupiedSpace() {
 		// 0,0
-		// Also assume space (0,1) is occupied
+		// Also assume space (0,1) is occupied.
 		board.getCell(0, 1).setOccupied(true);;
 		Set<TestBoardCell> expectedTargets = new HashSet<TestBoardCell>();
 		board.calcTargets(board.getCell(0,0), 1);
