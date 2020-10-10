@@ -78,7 +78,7 @@ public class BoardTestExp {
 	}
 	
 	/*
-	 * The five following tests
+	 * The five following tests test the calcTargets(method)
 	 */
 	@Test
 	public void testPathlengthOneFromCenter() {
