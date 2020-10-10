@@ -3,7 +3,7 @@ Room, Cookplace, C
 Room, Attic, A
 Room, Basement, B
 Room, Literature Room, L
-Room, Eating Room, D
+Room, Eating Room, E
 Room, Game Room, G
 Room, Observatory, O
 Room, Pantry, P

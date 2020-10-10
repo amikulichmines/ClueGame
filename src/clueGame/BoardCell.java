@@ -5,7 +5,7 @@ import java.util.Set;
 
 import experiment.TestBoardCell;
 
-public class BoardCell {
+public class BoardCell{
 
 	/*
 	 * This class represents one cell in a grid.
@@ -14,6 +14,7 @@ public class BoardCell {
 	private int col;
 	private char initial;
 	private DoorDirection doorDirection;
+	private boolean doorway = false;
 	private boolean isOccupied = false;
 	private boolean isRoom = false;
 	private boolean roomLabel = false;
@@ -21,11 +22,18 @@ public class BoardCell {
 	private char secretPassage;
 	public Set<BoardCell> adjList = new HashSet<BoardCell>();
 
-	public BoardCell(int row, int col) {
-		// TODO 
+	public BoardCell(int row, int col) { 
 		super();
 		this.row = row;
 		this.col = col;
+	}
+	
+	public void setInitial(char c) {
+		initial = c;
+	}
+	
+	public char getInitial() {
+		return initial;
 	}
 	
 	public Set<BoardCell> addAdj() {
@@ -33,9 +41,12 @@ public class BoardCell {
 		
 	}
 	
+	public void setDoorway(boolean doorway) {
+		this.doorway = doorway;
+	}
+	
 	public Set<BoardCell> getAdjList() {
 		return adjList;
-		// TODO returns the adjacency list for the cell
 	}
 	
 	public void setRoom(boolean isRoom) {
@@ -55,28 +66,52 @@ public class BoardCell {
 	}
 
 	public boolean isDoorway() {
-		// TODO Auto-generated method stub
-		return false;
+		return doorway;
 	}
 
 	public DoorDirection getDoorDirection() {
-		// TODO Auto-generated method stub
-		return null;
+		return doorDirection;
+	}
+	public void setDoorDirection(char direction) {
+		this.doorDirection = getEnumFromValue(direction);
+	}
+	
+	public boolean isRoomLabel() {
+		return roomLabel;
+	}
+
+	public void setRoomLabel(boolean roomLabel) {
+		this.roomLabel = roomLabel;
+	}
+
+	public void setRoomCenter(boolean roomCenter) {
+		this.roomCenter = roomCenter;
+	}
+
+	public DoorDirection getEnumFromValue(char value) {
+		if(value == 'v') return DoorDirection.DOWN;
+		if(value == '<') return DoorDirection.LEFT;
+		if(value == '>') return DoorDirection.RIGHT;
+		if(value == '^') return DoorDirection.UP;
+		return DoorDirection.NONE;
 	}
 
 	public boolean isLabel() {
-		// TODO Auto-generated method stub
-		return false;
+		return roomLabel;
+	}
+
+	public void setSecretPassage(char secretPassage) {
+		this.secretPassage = secretPassage;
 	}
 
 	public boolean isRoomCenter() {
-		// TODO Auto-generated method stub
-		return false;
+		return roomCenter;
 	}
 
 	public char getSecretPassage() {
-		// TODO Auto-generated method stub
-		return 0;
+		return secretPassage;
 	}
+	
+	
 	
 }
