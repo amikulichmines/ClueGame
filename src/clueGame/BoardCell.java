@@ -20,7 +20,7 @@ public class BoardCell{
 	private boolean roomLabel = false;
 	private boolean roomCenter = false;
 	private char secretPassage;
-	public Set<BoardCell> adjList = new HashSet<BoardCell>();
+	private Set<BoardCell> adjList = new HashSet<BoardCell>();
 
 	public BoardCell(int row, int col) { 
 		super();
@@ -112,6 +112,17 @@ public class BoardCell{
 		return secretPassage;
 	}
 	
+	public void setAdjList(Set<BoardCell> adjList) {
+		this.adjList= adjList;
+	}
 	
+	
+	public String toString() {
+		String adjacents = "";
+		for (BoardCell cell : adjList) {
+			adjacents += "Row: "+ cell.row + "   Col: " + cell.col + "\n";
+		}
+		return ("Row: "+row+"   Col: "+col+"\nAdjacency List:\n"+adjacents+"\n\n");		
+	}
 	
 }

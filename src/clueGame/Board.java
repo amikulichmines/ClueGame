@@ -10,24 +10,22 @@ import java.lang.System.Logger;
 import java.util.regex.*;
 
 import clueGame.BoardCell;
+import experiment.TestBoardCell;
 
 public class Board {
 
 	private int numRows;
 	private int numColumns;
 	private BoardCell [][] grid;
-	private Set<BoardCell> targets;
+	private Set<BoardCell> targets = new HashSet<BoardCell>();
 	private String layoutConfigFile = "";
+	private String setupConfigFile = "";
 	private String loggerFile = "";
-	private Map<Character, Room> roomMap;
 	private static Board theInstance = new Board();
-	private String csvFile = "";
-	private String txtFile = "";
 	private Map<Character,Room> roomDictionary = new HashMap<Character,Room>();
 	private Map<Character,Room> spaceDictionary = new HashMap<Character,Room>();
 	private ArrayList<String[]> tempGrid = new ArrayList<String[]>();
-	private ArrayList<Room> roomList; // = new ArrayList<Room>();
-	
+
 	private Board(){
 		super();
 	}
@@ -47,8 +45,30 @@ public class Board {
 			}
 			grid[r]=row;
 		}
+		setupDoors();
+		setAdjLists();
 	}
-	
+	public void setupDoors() {
+		for(int r=0; r<numRows; r++) { 			// rows
+			for(int c=0; c<numColumns; c++){ 	// columns
+				if(grid[r][c].isDoorway()) {
+					BoardCell cell = grid[r][c];
+					if(cell.getDoorDirection() == DoorDirection.LEFT) {
+						roomDictionary.get(grid[r][c-1].getInitial()).addDoor(cell);
+					}
+					else if(cell.getDoorDirection() == DoorDirection.UP) {
+						roomDictionary.get(grid[r-1][c].getInitial()).addDoor(cell);
+					}
+					else if(cell.getDoorDirection() == DoorDirection.RIGHT) {
+						roomDictionary.get(grid[r][c+1].getInitial()).addDoor(cell);
+					}
+					else if(cell.getDoorDirection() == DoorDirection.DOWN) {
+						roomDictionary.get(grid[r+1][c].getInitial()).addDoor(cell);
+					}
+				}
+			}
+		}
+	}
 	public BoardCell setupCell(int r, int c){
 		char[] doorDirections = {'<','^','>','v'}; 
 		BoardCell cell = new BoardCell(r,c);
@@ -57,23 +77,47 @@ public class Board {
 			if (!cellInfo.matches("[A-Z][vA-Z#*<>^]?")) {
 				throw new BadConfigFormatException();
 			}
-			cell.setInitial(cellInfo.charAt(0));
-			if(cellInfo.length() > 1) {
-				char addInfo = cellInfo.charAt(1);
-				if (new String(doorDirections).contains(new String(""+addInfo))) {
-					cell.setDoorway(true);
-					cell.setDoorDirection(addInfo);
-				} 
-				if(addInfo == '#') {
-					cell.setRoomLabel(true);
-					roomDictionary.get(cellInfo.charAt(0)).setLabelCell(cell);
-				}
-				if(addInfo == '*') {
-					cell.setRoomCenter(true);
-					roomDictionary.get(cellInfo.charAt(0)).setCenterCell(cell);
-}
-				if((addInfo+"").matches("[A-Z]")){
-					cell.setSecretPassage(addInfo);
+			char roomKey = cellInfo.charAt(0);
+			cell.setInitial(roomKey);
+
+			if(roomKey == 'X') {
+				cell.setOccupied(true);
+			} else {
+				// if the roomkey is a key of room dictionary
+				if(roomDictionary.containsKey(roomKey))
+					cell.setRoom(true);
+				if(cellInfo.length() > 1) {
+					Room room = roomDictionary.get(roomKey);
+					char addInfo = cellInfo.charAt(1);
+
+					if(addInfo == '#') {
+						cell.setRoomLabel(true);
+						roomDictionary.get(roomKey).setLabelCell(cell);
+					}
+					else if(addInfo == '*') {
+						cell.setRoomCenter(true);
+						roomDictionary.get(roomKey).setCenterCell(cell);
+					}
+					else if((addInfo+"").matches("[A-Z]")){
+						cell.setSecretPassage(addInfo);
+						roomDictionary.get(roomKey).addSecretPassage(cell);
+					}
+					else if(addInfo == '<') {
+						cell.setDoorway(true);
+						cell.setDoorDirection(addInfo);
+					}
+					else if(addInfo == '^') {
+						cell.setDoorway(true);
+						cell.setDoorDirection(addInfo);
+					}
+					else if(addInfo == '>') {
+						cell.setDoorway(true);
+						cell.setDoorDirection(addInfo);
+					}
+					else if(addInfo == 'v') {
+						cell.setDoorway(true);
+						cell.setDoorDirection(addInfo);
+					}
 				}
 			}
 		} catch (BadConfigFormatException e) {
@@ -86,12 +130,7 @@ public class Board {
 		loadSetupConfig();
 		loadLayoutConfig();
 	}
-	
-//	public void setupRoomList() {
-//		for (Room room : roomDictionary) {
-//			
-//		}
-//	}
+
 	
 	public int getNumRows() {
 		return numRows;
@@ -111,13 +150,12 @@ public class Board {
 	
 	public void loadSetupConfig() {
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(txtFile));
+			BufferedReader reader = new BufferedReader(new FileReader(setupConfigFile));
 			String line = "";
 			while (line != null) {
 				line = reader.readLine(); 
 				if(line == null)
 					break;
-//				if(line.charAt(0) != '/' && line.charAt(1) != '/') { // if it's not a blank line
 				if(line.indexOf("/") < 0) {
 					try {
 						String[] array = line.split(",");
@@ -139,11 +177,11 @@ public class Board {
 						System.exit(1);
 					}
 				}
-			} // error: Incorrect format for 'Room, Cookplace, C', not a valid room or space
+			} 
 	
 			reader.close();
 		}catch(IOException IO) {
-			String message = "Error reading the file '"+txtFile+"'. Aborting!";
+			String message = "Error reading the file '"+setupConfigFile+"'. Aborting!";
 			logFile(message);
 			System.exit(1);
 		}
@@ -162,8 +200,7 @@ public class Board {
 	
 	public void loadLayoutConfig() {
 		try {
-			
-			BufferedReader reader = new BufferedReader(new FileReader(csvFile));
+			BufferedReader reader = new BufferedReader(new FileReader(layoutConfigFile));
 			String line = "";
 			int rowCount = 0;
 			while (line != null) {
@@ -196,19 +233,107 @@ public class Board {
 			reader.close();
 			
 		}catch(IOException IO) {
-			String message = "Error reading the file '"+txtFile+"'. Aborting!";
+			String message = "Error reading the file '"+layoutConfigFile+"'. Aborting!";
 			logFile(message);
 			System.exit(1);
 		}
 	}
 	
+	public void setAdjLists() {
+		Set<BoardCell> adjList;
+		for(int r=0; r<numRows; r++) { 		// rows
+			for(int c=0; c<numColumns; c++){		// columns
+				adjList = new HashSet<BoardCell>();
+				
+				if(grid[r][c].isRoom()){
+					char roomKey = grid[r][c].getInitial();
+					// add any cells that correspond to the doorways of the room
+					for (BoardCell cell : roomDictionary.get(roomKey).getDoors()) {
+						adjList.add(cell); 	
+					}
+					// then cells correspond to the room that is the destination of the secret passage
+					for (BoardCell cell : roomDictionary.get(roomKey).getSecretPassages()) {
+						Room destination = roomDictionary.get(cell.getSecretPassage());
+						adjList.add(destination.getCenterCell());
+					}
+				}
+				else {
+					if(r!=numRows-1) {
+						if(!grid[r+1][c].isRoom()&&!grid[r+1][c].getOccupied())
+							adjList.add(grid[r+1][c]);
+					}
+					if(r!=0) {
+						if(!grid[r-1][c].isRoom()&&!grid[r-1][c].getOccupied())
+							adjList.add(grid[r-1][c]);
+					}
+					if(c!=numColumns-1) {
+						if(!grid[r][c+1].isRoom()&&!grid[r][c+1].getOccupied())
+							adjList.add(grid[r][c+1]);
+					}
+					if(c!=0) {
+						if(!grid[r][c-1].isRoom()&&!grid[r][c-1].getOccupied())
+							adjList.add(grid[r][c-1]);
+					}
+					// if doorway, find the direction to the room and add its center
+					if(grid[r][c].isDoorway()) {
+						if(grid[r][c].getDoorDirection() == DoorDirection.UP) {
+							adjList.add(roomDictionary.get(grid[r-1][c].getInitial()).getCenterCell());
+						}
+						if(grid[r][c].getDoorDirection() == DoorDirection.RIGHT) {
+							adjList.add(roomDictionary.get(grid[r][c+1].getInitial()).getCenterCell());
+						}
+						if(grid[r][c].getDoorDirection() == DoorDirection.DOWN) {
+							adjList.add(roomDictionary.get(grid[r+1][c].getInitial()).getCenterCell());
+						}
+						if(grid[r][c].getDoorDirection() == DoorDirection.LEFT) {
+							adjList.add(roomDictionary.get(grid[r][c-1].getInitial()).getCenterCell());
+						}
+					}
+				}
+				grid[r][c].setAdjList(adjList);			
+			}
+		}
+	}
+	
+	
 	public void setConfigFiles(String csvFile, String txtFile) {
-		this.csvFile = csvFile;
-		this.txtFile = txtFile;
+		this.layoutConfigFile = csvFile;
+		this.setupConfigFile = txtFile;
 	}
 	
 	public void calcTargets(BoardCell startCell, int pathlength) {
 		targets = new HashSet<BoardCell>();
+		// If we start in a room, get us out and then calculate targets.
+		if(startCell.isRoom()) {
+			for(BoardCell c : startCell.getAdjList()) {
+				if(!c.getOccupied())
+					recursivelyCalcTargets(c, pathlength-1, startCell);
+			}
+		}
+		else {
+			recursivelyCalcTargets(startCell, pathlength, new BoardCell(numRows+1, numColumns+1));
+		}
+		targets.remove(startCell);
+	}
+	
+	public void recursivelyCalcTargets(BoardCell startCell, int pathlength, BoardCell lastCell) {
+		// If we wind up in a room, add the target and do nothing else
+		if(startCell.isRoom()) {
+			targets.add(startCell);
+		}
+		else if(!startCell.getOccupied()) {
+			if(pathlength == 0) {
+				if(!startCell.isRoom()&&!startCell.getOccupied()) {
+					targets.add(startCell);
+				}
+			}
+			else {
+				for(BoardCell c : startCell.getAdjList()) {
+					if (lastCell != c)
+						recursivelyCalcTargets(c, pathlength-1, startCell);
+				}
+			}
+		}
 	}
 	
 	
@@ -226,7 +351,12 @@ public class Board {
 			return spaceDictionary.get(roomKey);
 		}
 	}
+	
 	public Room getRoom(BoardCell cell) {
 		return roomDictionary.get(cell.getInitial());
+	}
+	
+	public Set<BoardCell> getAdjList(int row, int col) {
+		return grid[row][col].getAdjList();
 	}
 }

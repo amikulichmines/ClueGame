@@ -1,5 +1,17 @@
 
-Used Saros for pair programming
+Used saros for pair programming
+
+commit 94dbfd4b011d85c1b1ea836149808ab1969dde40
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Sat Oct 10 16:08:54 2020 -0600
+
+    Finished the assignment
+
+commit 9afdc43f6d25afee44728d7ec34cfdd8f8840af8
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Sat Oct 10 12:14:48 2020 -0600
+
+    Added setupCsvs functionality
 
 commit bcc31abe684bb813c0f2487fa7792b6fc70f87fb
 Author: amikulichmines <amikulich@mymail.mines.edu>

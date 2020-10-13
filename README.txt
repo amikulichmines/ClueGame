@@ -2,6 +2,16 @@ Sterling Baird, Alex Mikulich
 
 Files:
 
+Package clueGame:
+
+BadConfigFormatException.java
+Board.java
+DoorDirection.java
+Room.java
+ClueLayout.csv
+ClueSetup.txt
+OurTests.txt
+
 
 Package Experiment
 
