@@ -25,7 +25,6 @@ public class Board {
 	private Map<Character,Room> roomDictionary = new HashMap<Character,Room>();
 	private Map<Character,Room> spaceDictionary = new HashMap<Character,Room>();
 	private ArrayList<String[]> tempGrid = new ArrayList<String[]>();
-
 	private Board(){
 		super();
 	}
@@ -304,20 +303,24 @@ public class Board {
 	public void calcTargets(BoardCell startCell, int pathlength) {
 		targets = new HashSet<BoardCell>();
 		// If we start in a room, get us out and then calculate targets.
+		Set<BoardCell> visited = new HashSet<BoardCell>();
+		int branch = 0;
 		if(startCell.isRoom()) {
 			for(BoardCell c : startCell.getAdjList()) {
+				visited.add(startCell);
 				if(!c.getOccupied())
-					recursivelyCalcTargets(c, pathlength-1, startCell);
+					recursivelyCalcTargets(c, pathlength-1, visited, branch);
 			}
 		}
 		else {
-			recursivelyCalcTargets(startCell, pathlength, new BoardCell(numRows+1, numColumns+1));
+			recursivelyCalcTargets(startCell, pathlength, visited, branch);
 		}
-		targets.remove(startCell);
 	}
 	
-	public void recursivelyCalcTargets(BoardCell startCell, int pathlength, BoardCell lastCell) {
+	public void recursivelyCalcTargets(BoardCell startCell, int pathlength, Set<BoardCell> visited, int branch) {
 		// If we wind up in a room, add the target and do nothing else
+		Set<BoardCell> tempVisited = new HashSet<BoardCell>(visited);
+		tempVisited.add(startCell);
 		if(startCell.isRoom()) {
 			targets.add(startCell);
 		}
@@ -328,9 +331,10 @@ public class Board {
 				}
 			}
 			else {
+				branch++;
 				for(BoardCell c : startCell.getAdjList()) {
-					if (lastCell != c)
-						recursivelyCalcTargets(c, pathlength-1, startCell);
+					if (!tempVisited.contains(c))
+						recursivelyCalcTargets(c, pathlength-1, tempVisited, branch);
 				}
 			}
 		}
