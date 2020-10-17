@@ -147,14 +147,14 @@ public class FileInitTest {
 		// test a wall (unused space)
 		cell = board.getCell(12, 6);
 		room = board.getRoom( cell ) ;
-		assertTrue( room == null );
+		assertTrue( room != null );
 		assertFalse( cell.isRoomCenter() );
 		assertFalse( cell.isLabel() );
 		
 		// test a wall (unused space)
 		cell = board.getCell(8, 27);
 		room = board.getRoom( cell ) ;
-		assertTrue( room == null );
+		assertTrue( room != null );
 		assertFalse( cell.isRoomCenter() );
 		assertFalse( cell.isLabel() );
 				

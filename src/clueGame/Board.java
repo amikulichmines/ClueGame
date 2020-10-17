@@ -243,17 +243,18 @@ public class Board {
 		for(int r=0; r<numRows; r++) { 		// rows
 			for(int c=0; c<numColumns; c++){		// columns
 				adjList = new HashSet<BoardCell>();
-				
 				if(grid[r][c].isRoom()){
-					char roomKey = grid[r][c].getInitial();
-					// add any cells that correspond to the doorways of the room
-					for (BoardCell cell : roomDictionary.get(roomKey).getDoors()) {
-						adjList.add(cell); 	
-					}
-					// then cells correspond to the room that is the destination of the secret passage
-					for (BoardCell cell : roomDictionary.get(roomKey).getSecretPassages()) {
-						Room destination = roomDictionary.get(cell.getSecretPassage());
-						adjList.add(destination.getCenterCell());
+					if(grid[r][c].isRoomCenter()){
+						char roomKey = grid[r][c].getInitial();
+						// add any cells that correspond to the doorways of the room
+						for (BoardCell cell : roomDictionary.get(roomKey).getDoors()) {
+							adjList.add(cell); 	
+						}
+						// then cells correspond to the room that is the destination of the secret passage
+						for (BoardCell cell : roomDictionary.get(roomKey).getSecretPassages()) {
+							Room destination = roomDictionary.get(cell.getSecretPassage());
+							adjList.add(destination.getCenterCell());
+						}
 					}
 				}
 				else {
@@ -357,7 +358,12 @@ public class Board {
 	}
 	
 	public Room getRoom(BoardCell cell) {
-		return roomDictionary.get(cell.getInitial());
+		char roomKey = cell.getInitial();
+		if (roomDictionary.containsKey(roomKey)){
+			return roomDictionary.get(roomKey);
+		} else {
+			return spaceDictionary.get(roomKey);
+		}
 	}
 	
 	public Set<BoardCell> getAdjList(int row, int col) {

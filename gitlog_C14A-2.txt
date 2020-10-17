@@ -1,5 +1,20 @@
+commit b1025fc89d74d1a1d600128315c9fe05c720e50a
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Tue Oct 13 20:31:26 2020 -0600
 
-Used saros for pair programming
+    Finished the tests so that all passed
+
+commit 6413b073ebfa2317c41192a6105545610ee8f4e7
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Tue Oct 13 20:09:59 2020 -0600
+
+    Fixed some of the tests
+
+commit 94815127f0becde0b31ee3239e927a9f535d67f2
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Tue Oct 13 17:36:37 2020 -0600
+
+    Added recursively calculate targets function to pass the test
 
 commit 94dbfd4b011d85c1b1ea836149808ab1969dde40
 Author: amikulichmines <amikulich@mymail.mines.edu>

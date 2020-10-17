@@ -91,7 +91,6 @@ public class BoardTestExp {
 		expectedTargets.add(board.getCell(2,3));
 		Set<TestBoardCell> actualTargets = board.getTargets();
 		assertEquals(expectedTargets,actualTargets);
-		
 	}
 	
 	@Test
