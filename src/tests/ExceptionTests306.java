@@ -32,22 +32,22 @@ public class ExceptionTests306 {
 	// a room that is not in the legend. See first test for other important
 	// comments.
 	
-//	@Test(expected = BadConfigFormatException.class)
-//	public void testBadRoom() throws BadConfigFormatException, FileNotFoundException {
-//		Board board = Board.getInstance();
-//		board.setConfigFiles("ClueLayoutBadRoom306.csv", "ClueSetup306.txt");
-//		board.loadSetupConfig();
-//		board.loadLayoutConfig();
-//	}
-//
-//	// Test that an exception is thrown for a config file with a room type
-//	// that is not Card or Other
-//	@Test(expected = BadConfigFormatException.class)
-//	public void testBadRoomFormat() throws BadConfigFormatException, FileNotFoundException {
-//		Board board = Board.getInstance();
-//		board.setConfigFiles("ClueLayout306.csv", "ClueSetupBadFormat306.txt");
-//		board.loadSetupConfig();
-//		board.loadLayoutConfig();
-//	}
+	@Test(expected = BadConfigFormatException.class)
+	public void testBadRoom() throws BadConfigFormatException, FileNotFoundException {
+		Board board = Board.getInstance();
+		board.setConfigFiles("ClueLayoutBadRoom306.csv", "ClueSetup306.txt");
+		board.loadSetupConfig();
+		board.loadLayoutConfig();
+	}
+
+	// Test that an exception is thrown for a config file with a room type
+	// that is not Card or Other
+	@Test(expected = BadConfigFormatException.class)
+	public void testBadRoomFormat() throws BadConfigFormatException, FileNotFoundException {
+		Board board = Board.getInstance();
+		board.setConfigFiles("ClueLayout306.csv", "ClueSetupBadFormat306.txt");
+		board.loadSetupConfig();
+		board.loadLayoutConfig();
+	}
 
 }
