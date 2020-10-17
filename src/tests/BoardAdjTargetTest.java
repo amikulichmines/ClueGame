@@ -257,7 +257,7 @@ public class BoardAdjTargetTest {
 	}
 
 	@Test
-	// test to make sure occupied locations do not cause problems
+	// test to make sure occupied locations do not cause  problems
 	public void testTargetsOccupied() {
 		// test a roll of 4 blocked 2 down
 		board.getCell(19, 13).setOccupied(true);
