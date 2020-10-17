@@ -1,3 +1,31 @@
+Sterling and I used Saros to pair program!
+
+Refactoring: We shortened the code by eliminating some of the redundant tests in "recursivelyCalcTargets," such as checking to see qualities of the room, and just leaving that to the setAdjTest function.
+
+commit 3730841b38a31befe67b0a742d6110dcbafd4678
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Oct 16 21:33:15 2020 -0600
+
+    uncommented some tests
+
+commit a24d3f2567e428d61dd57c2d3d455d0ad7083767
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Oct 16 21:19:06 2020 -0600
+
+    Modified loading functions in board.java to throw exceptions
+
+commit 91b6ce2e36bd96e39306b66e2da530b9995a9f52
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Oct 16 19:54:59 2020 -0600
+
+    Updated code to pass test 6
+
+commit 656a4eae21e79fdea05c2ebcd960219d2d5a2f40
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Oct 16 19:54:05 2020 -0600
+
+    Updated to code to pass test 5
+
 commit b1025fc89d74d1a1d600128315c9fe05c720e50a
 Author: amikulichmines <amikulich@mymail.mines.edu>
 Date:   Tue Oct 13 20:31:26 2020 -0600

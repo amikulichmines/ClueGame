@@ -74,6 +74,7 @@ public class Board {
 		}
 	}
 	public BoardCell setupCell(int r, int c){
+		// Looks at the letters in the cell and makes the necessary adjustments
 		char[] doorDirections = {'<','^','>','v'}; 
 		BoardCell cell = new BoardCell(r,c);
 		String cellInfo = tempGrid.get(r)[c];
@@ -143,7 +144,6 @@ public class Board {
 			logFile("Incorrect format for '" + layoutConfigFile + "', invalid room or character\n");
 			System.exit(1);
 		}
-
 	}
 
 	
@@ -171,7 +171,7 @@ public class Board {
 				line = reader.readLine(); 
 				if(line == null)
 					break;
-				if(line.indexOf("/") < 0) {
+				if(line.indexOf("/") < 0) { // Don't parse if the line is commented with a '//'. 
 					try {
 						String[] array = line.split(",");
 						for (int i = 0; i<array.length; i++) {
@@ -223,6 +223,7 @@ public class Board {
 					break;
 				rowCount++;
 				try {
+					// reads in each line in the layout config text file and breaks the line into words to read
 					String[] array = line.split(",");
 					int lgth = array.length;
 					if (numColumns == 0) {
@@ -272,6 +273,8 @@ public class Board {
 					}
 				}
 				else {
+					// This bit of code sets adjacency lists for hallways. If there is an edge of the board,
+					// or a person, or a room, don't add it to the adjacent list.
 					if(r!=numRows-1) {
 						if(!grid[r+1][c].isRoom()&&!grid[r+1][c].getOccupied())
 							adjList.add(grid[r+1][c]);
