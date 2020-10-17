@@ -17,7 +17,7 @@ public class Board {
 	private int numRows;
 	private int numColumns;
 	private BoardCell [][] grid;
-	private Set<BoardCell> targets = new HashSet<BoardCell>();
+	private Set<BoardCell> targets;
 	private String layoutConfigFile = "";
 	private String setupConfigFile = "";
 	private String loggerFile = "";
@@ -33,6 +33,11 @@ public class Board {
 	}
 
 	public void initialize() {
+		targets = new HashSet<BoardCell>();
+		roomDictionary = new HashMap<Character,Room>();
+		spaceDictionary = new HashMap<Character,Room>();
+		tempGrid = new ArrayList<String[]>();
+		numColumns = 0;
 		loadConfigFiles();
 		grid = new BoardCell[numRows][numColumns];
 		BoardCell [] row;
@@ -126,8 +131,19 @@ public class Board {
 	}
 	
 	public void loadConfigFiles () {
-		loadSetupConfig();
-		loadLayoutConfig();
+		try {
+			loadSetupConfig();
+		}catch (BadConfigFormatException b){
+			logFile("Incorrect format for '" + setupConfigFile + "', invalid symbols or invalid length\n");
+			System.exit(1);
+		}
+		try {
+			loadLayoutConfig();
+		}catch(BadConfigFormatException b) {
+			logFile("Incorrect format for '" + layoutConfigFile + "', invalid room or character\n");
+			System.exit(1);
+		}
+
 	}
 
 	
@@ -147,7 +163,7 @@ public class Board {
 		this.numColumns = numColumns;
 	}
 	
-	public void loadSetupConfig() {
+	public void loadSetupConfig() throws BadConfigFormatException{
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(setupConfigFile));
 			String line = "";
@@ -172,8 +188,7 @@ public class Board {
 						} else 
 							throw new BadConfigFormatException();
 					}catch(BadConfigFormatException nE){
-						logFile("Incorrect format for '" + line + "', not a valid room or space\n");
-						System.exit(1);
+						throw new BadConfigFormatException();
 					}
 				}
 			} 
@@ -197,7 +212,7 @@ public class Board {
 		
 	}
 	
-	public void loadLayoutConfig() {
+	public void loadLayoutConfig() throws BadConfigFormatException {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(layoutConfigFile));
 			String line = "";
@@ -209,6 +224,7 @@ public class Board {
 				rowCount++;
 				try {
 					String[] array = line.split(",");
+					int lgth = array.length;
 					if (numColumns == 0) {
 						numColumns = array.length; 
 					}
@@ -223,14 +239,12 @@ public class Board {
 					}
 					tempGrid.add(array);
 				}catch(BadConfigFormatException nE){
-					logFile("Incorrect format for '" + line + "', invalid symbols or invalid length\n");
-					System.exit(1);
+					throw new BadConfigFormatException();
 				}
 			}
-			numRows = rowCount;
-	
+			numRows = rowCount;	
 			reader.close();
-			
+
 		}catch(IOException IO) {
 			String message = "Error reading the file '"+layoutConfigFile+"'. Aborting!";
 			logFile(message);
