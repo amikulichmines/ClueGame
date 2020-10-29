@@ -52,6 +52,7 @@ public class Board {
 		setupDoors();
 		setAdjLists();
 	}
+	
 	public void setupDoors() {
 		for(int r=0; r<numRows; r++) { 			// rows
 			for(int c=0; c<numColumns; c++){ 	// columns
@@ -73,6 +74,7 @@ public class Board {
 			}
 		}
 	}
+	
 	public BoardCell setupCell(int r, int c){
 		// Looks at the letters in the cell and makes the necessary adjustments
 		char[] doorDirections = {'<','^','>','v'}; 
@@ -223,7 +225,7 @@ public class Board {
 					break;
 				rowCount++;
 				try {
-					// reads in each line in the layout config text file and breaks the line into words to read
+					// reads in each line in the layout config text file and breaks the line into Strings for processing
 					String[] array = line.split(",");
 					int lgth = array.length;
 					if (numColumns == 0) {
