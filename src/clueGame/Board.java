@@ -124,6 +124,7 @@ public class Board {
 	}
 	
 	public void loadConfigFiles () {
+		// Reads the map of the board
 		try {
 			loadSetupConfig();
 		}catch (BadConfigFormatException b){
