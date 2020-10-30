@@ -261,17 +261,14 @@ public class Board {
 					if(r!=numRows-1 && !grid[r+1][c].isRoom()&&!grid[r+1][c].getOccupied()) {
 						adjList.add(grid[r+1][c]);
 					}
-					if(r!=0) {
-						if(!grid[r-1][c].isRoom()&&!grid[r-1][c].getOccupied())
-							adjList.add(grid[r-1][c]);
+					if(r!=0&&!grid[r-1][c].isRoom()&&!grid[r-1][c].getOccupied()) {
+						adjList.add(grid[r-1][c]);
 					}
-					if(c!=numColumns-1) {
-						if(!grid[r][c+1].isRoom()&&!grid[r][c+1].getOccupied())
-							adjList.add(grid[r][c+1]);
+					if(c!=numColumns-1&&!grid[r][c+1].isRoom()&&!grid[r][c+1].getOccupied()) {
+						adjList.add(grid[r][c+1]);
 					}
-					if(c!=0) {
-						if(!grid[r][c-1].isRoom()&&!grid[r][c-1].getOccupied())
-							adjList.add(grid[r][c-1]);
+					if(c!=0 && !grid[r][c-1].isRoom()&&!grid[r][c-1].getOccupied()) {
+						adjList.add(grid[r][c-1]);
 					}
 					// if doorway, find the direction to the room and add its center
 					if(grid[r][c].isDoorway()) {
