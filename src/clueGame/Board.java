@@ -240,7 +240,7 @@ public class Board {
 		Set<BoardCell> adjList;
 		for(int r=0; r<numRows; r++) { 		// rows
 			for(int c=0; c<numColumns; c++){		// columns
-				adjList = new HashSet<BoardCell>();
+				adjList = new HashSet<>();
 				if(grid[r][c].isRoom()){
 					if(grid[r][c].isRoomCenter()){
 						char roomKey = grid[r][c].getInitial();
@@ -298,9 +298,9 @@ public class Board {
 	}
 	
 	public void calcTargets(BoardCell startCell, int pathlength) {
-		targets = new HashSet<BoardCell>();
+		targets = new HashSet<>();
 		// If we start in a room, get us out and then calculate targets.
-		Set<BoardCell> visited = new HashSet<BoardCell>();
+		Set<BoardCell> visited = new HashSet<>();
 		int branch = 0;
 		if(startCell.isRoom()) {
 			for(BoardCell c : startCell.getAdjList()) {
@@ -316,8 +316,8 @@ public class Board {
 	
 	public void recursivelyCalcTargets(BoardCell startCell, int pathlength, Set<BoardCell> visited, int branch) {
 		// If we wind up in a room, add the target and do nothing else
-		Set<BoardCell> tempVisited = new HashSet<BoardCell>(visited);
-		tempVisited.add(startCell);
+//		Set<BoardCell> tempVisited = new HashSet<>(visited);
+		visited.add(startCell);
 		if(startCell.isRoom()) {
 			targets.add(startCell);
 		}
@@ -330,11 +330,13 @@ public class Board {
 			else {
 				branch++;
 				for(BoardCell c : startCell.getAdjList()) {
-					if (!tempVisited.contains(c))
-						recursivelyCalcTargets(c, pathlength-1, tempVisited, branch);
+					if (!visited.contains(c))
+						recursivelyCalcTargets(c, pathlength-1, visited, branch);
 				}
 			}
 		}
+		visited.remove(startCell);
+		
 	}
 	
 	
