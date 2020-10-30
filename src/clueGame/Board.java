@@ -22,9 +22,9 @@ public class Board {
 	private String setupConfigFile = "";
 	private String loggerFile = "";
 	private static Board theInstance = new Board();
-	private Map<Character,Room> roomDictionary = new HashMap<Character,Room>();
-	private Map<Character,Room> spaceDictionary = new HashMap<Character,Room>();
-	private ArrayList<String[]> tempGrid = new ArrayList<String[]>();
+	private Map<Character,Room> roomDictionary = new HashMap<>();
+	private Map<Character,Room> spaceDictionary = new HashMap<>();
+	private ArrayList<String[]> tempGrid = new ArrayList<>();
 	private Board(){
 		super();
 	}
@@ -33,10 +33,10 @@ public class Board {
 	}
 
 	public void initialize() {
-		targets = new HashSet<BoardCell>();
-		roomDictionary = new HashMap<Character,Room>();
-		spaceDictionary = new HashMap<Character,Room>();
-		tempGrid = new ArrayList<String[]>();
+		targets = new HashSet<>();
+		roomDictionary = new HashMap<>();
+		spaceDictionary = new HashMap<>();
+		tempGrid = new ArrayList<>();
 		numColumns = 0;
 		loadConfigFiles();
 		grid = new BoardCell[numRows][numColumns];
@@ -77,7 +77,6 @@ public class Board {
 	
 	public BoardCell setupCell(int r, int c){
 		// Looks at the letters in the cell and makes the necessary adjustments
-		char[] doorDirections = {'<','^','>','v'}; 
 		BoardCell cell = new BoardCell(r,c);
 		String cellInfo = tempGrid.get(r)[c];
 		try {
@@ -109,19 +108,7 @@ public class Board {
 						cell.setSecretPassage(addInfo);
 						roomDictionary.get(roomKey).addSecretPassage(cell);
 					}
-					else if(addInfo == '<') {
-						cell.setDoorway(true);
-						cell.setDoorDirection(addInfo);
-					}
-					else if(addInfo == '^') {
-						cell.setDoorway(true);
-						cell.setDoorDirection(addInfo);
-					}
-					else if(addInfo == '>') {
-						cell.setDoorway(true);
-						cell.setDoorDirection(addInfo);
-					}
-					else if(addInfo == 'v') {
+					else if("^v<>".contains(""+addInfo)) {
 						cell.setDoorway(true);
 						cell.setDoorDirection(addInfo);
 					}
