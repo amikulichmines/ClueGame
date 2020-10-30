@@ -93,7 +93,6 @@ public class Board {
 				if(roomDictionary.containsKey(roomKey))
 					cell.setRoom(true);
 				if(cellInfo.length() > 1) {
-					Room room = roomDictionary.get(roomKey);
 					char addInfo = cellInfo.charAt(1);
 
 					if(addInfo == '#') {
