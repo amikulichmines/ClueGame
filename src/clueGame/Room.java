@@ -7,8 +7,8 @@ public class Room {
 	private String name = "";
 	private BoardCell centerCell;
 	private BoardCell labelCell;
-	private Set<BoardCell> doors = new HashSet<BoardCell>();
-	private Set<BoardCell> secretPassages = new HashSet<BoardCell>();
+	private Set<BoardCell> doors = new HashSet<>();
+	private Set<BoardCell> secretPassages = new HashSet<>();
 	
 	public Room(String name) {
 		this.name = name;
@@ -54,7 +54,7 @@ public class Room {
 		return secretPassages;
 	}
 
-	public void setSecretPassages(HashSet<BoardCell> secretPassages) {
+	public void setSecretPassages(Set<BoardCell> secretPassages) {
 		this.secretPassages = secretPassages;
 	}
 	

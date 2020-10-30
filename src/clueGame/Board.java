@@ -316,7 +316,6 @@ public class Board {
 	
 	public void recursivelyCalcTargets(BoardCell startCell, int pathlength, Set<BoardCell> visited, int branch) {
 		// If we wind up in a room, add the target and do nothing else
-//		Set<BoardCell> tempVisited = new HashSet<>(visited);
 		visited.add(startCell);
 		if(startCell.isRoom()) {
 			targets.add(startCell);
