@@ -210,26 +210,21 @@ public class Board {
 				if (line == null)
 					break;
 				rowCount++;
-				try {
-					// reads in each line in the layout config text file and breaks the line into Strings for processing
-					String[] array = line.split(",");
-					int lgth = array.length;
-					if (numColumns == 0) {
-						numColumns = array.length; 
-					}
-					if (numColumns != array.length) {
-						throw new BadConfigFormatException();
-					}
-					for (int i = 0; i<array.length; i++) {
-						array[i] = array[i].strip();
-						if (array[i].length() < 1 || array[i].length() > 2) {
-							throw new BadConfigFormatException();
-						}
-					}
-					tempGrid.add(array);
-				}catch(BadConfigFormatException nE){
+				// reads in each line in the layout config text file and breaks the line into Strings for processing
+				String[] array = line.split(",");
+				if (numColumns == 0) {
+					numColumns = array.length; 
+				}
+				if (numColumns != array.length) {
 					throw new BadConfigFormatException();
 				}
+				for (int i = 0; i<array.length; i++) {
+					array[i] = array[i].strip();
+					if (array[i].length() < 1 || array[i].length() > 2) {
+						throw new BadConfigFormatException();
+					}
+				}
+				tempGrid.add(array);
 			}
 			numRows = rowCount;	
 			reader.close();
@@ -263,9 +258,8 @@ public class Board {
 				else {
 					// This bit of code sets adjacency lists for hallways. If there is an edge of the board,
 					// or a person, or a room, don't add it to the adjacent list.
-					if(r!=numRows-1) {
-						if(!grid[r+1][c].isRoom()&&!grid[r+1][c].getOccupied())
-							adjList.add(grid[r+1][c]);
+					if(r!=numRows-1 && !grid[r+1][c].isRoom()&&!grid[r+1][c].getOccupied()) {
+						adjList.add(grid[r+1][c]);
 					}
 					if(r!=0) {
 						if(!grid[r-1][c].isRoom()&&!grid[r-1][c].getOccupied())
