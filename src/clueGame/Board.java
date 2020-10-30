@@ -17,17 +17,21 @@ public class Board {
 	private int numRows;
 	private int numColumns;
 	private BoardCell [][] grid;
-	private Set<BoardCell> targets;
 	private String layoutConfigFile = "";
 	private String setupConfigFile = "";
 	private String loggerFile = "";
-	private static Board theInstance = new Board();
+	private Set<BoardCell> targets;
 	private Map<Character,Room> roomDictionary = new HashMap<>();
 	private Map<Character,Room> spaceDictionary = new HashMap<>();
 	private ArrayList<String[]> tempGrid = new ArrayList<>();
+	private static Board theInstance = new Board();
+	
+	
 	private Board(){
 		super();
 	}
+	
+	
 	public static Board getInstance() {
 		return theInstance;
 	}
@@ -160,24 +164,20 @@ public class Board {
 				if(line == null)
 					break;
 				if(line.indexOf("/") < 0) { // Don't parse if the line is commented with a '//'. 
-					try {
-						String[] array = line.split(",");
-						for (int i = 0; i<array.length; i++) {
-							array[i] = array[i].strip();
-						}
-						if (array.length != 3 || array[2].length() != 1) {
-							throw new BadConfigFormatException();
-						}
-						if (array[0].toUpperCase().equals("SPACE")) {
-							spaceDictionary.put(array[2].charAt(0), new Room(array[1]));
-						} else if (array[0].toUpperCase().equals("ROOM")) {
-							
-							roomDictionary.put(array[2].charAt(0), new Room(array[1]));
-						} else 
-							throw new BadConfigFormatException();
-					}catch(BadConfigFormatException nE){
+					String[] array = line.split(",");
+					for (int i = 0; i<array.length; i++) {
+						array[i] = array[i].strip();
+					}
+					if (array.length != 3 || array[2].length() != 1) {
 						throw new BadConfigFormatException();
 					}
+					if (array[0].equalsIgnoreCase("SPACE")) {
+						spaceDictionary.put(array[2].charAt(0), new Room(array[1]));
+					} else if (array[0].equalsIgnoreCase("ROOM")) {
+						
+						roomDictionary.put(array[2].charAt(0), new Room(array[1]));
+					} else 
+						throw new BadConfigFormatException();
 				}
 			} 
 	
