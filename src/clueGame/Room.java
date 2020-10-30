@@ -61,6 +61,4 @@ public class Room {
 	public void addSecretPassage(BoardCell cell) {
 		secretPassages.add(cell);
 	}
-	
-	
 }

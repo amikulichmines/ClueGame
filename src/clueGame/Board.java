@@ -298,25 +298,27 @@ public class Board {
 	}
 	
 	public void calcTargets(BoardCell startCell, int pathlength) {
+		// This function acts as an entry point to the recursion
+		
 		targets = new HashSet<>();
 		// If we start in a room, get us out and then calculate targets.
 		Set<BoardCell> visited = new HashSet<>();
-		int branch = 0;
 		if(startCell.isRoom()) {
 			for(BoardCell c : startCell.getAdjList()) {
 				visited.add(startCell);
 				if(!c.getOccupied())
-					recursivelyCalcTargets(c, pathlength-1, visited, branch);
+					recursivelyCalcTargets(c, pathlength-1, visited);
 			}
 		}
 		else {
-			recursivelyCalcTargets(startCell, pathlength, visited, branch);
+			recursivelyCalcTargets(startCell, pathlength, visited);
 		}
 	}
 	
-	public void recursivelyCalcTargets(BoardCell startCell, int pathlength, Set<BoardCell> visited, int branch) {
-		// If we wind up in a room, add the target and do nothing else
+	public void recursivelyCalcTargets(BoardCell startCell, int pathlength, Set<BoardCell> visited) {
 		visited.add(startCell);
+		// If we wind up in a room, add the target and do nothing else
+		// Base case
 		if(startCell.isRoom()) {
 			targets.add(startCell);
 		}
@@ -327,10 +329,9 @@ public class Board {
 				}
 			}
 			else {
-				branch++;
 				for(BoardCell c : startCell.getAdjList()) {
 					if (!visited.contains(c))
-						recursivelyCalcTargets(c, pathlength-1, visited, branch);
+						recursivelyCalcTargets(c, pathlength-1, visited);
 				}
 			}
 		}
