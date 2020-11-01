@@ -1,0 +1,114 @@
+
+
+----- Most significant change -----
+
+
+To set doorways, we had:
+
+String cellInfo = tempGrid.get(r)[c];
+if(cellInfo.length() > 1) {
+	if(cellInfo.length() > 1) {
+		char addInfo = cellInfo.charAt(1);
+		else if(addInfo == '<') {
+			cell.setDoorway(true);
+			cell.setDoorDirection(addInfo);
+		}
+		else if(addInfo == '^') {
+			cell.setDoorway(true);
+			cell.setDoorDirection(addInfo);
+		}
+		else if(addInfo == '>') {
+			cell.setDoorway(true);
+			cell.setDoorDirection(addInfo);
+		}
+		else if(addInfo == 'v') {
+			cell.setDoorway(true);
+			cell.setDoorDirection(addInfo);
+		}
+	}
+}
+
+Instead of 4 if-statements, we can do:
+
+
+String cellInfo = tempGrid.get(r)[c];
+if(cellInfo.length() > 1) {
+	if(cellInfo.length() > 1) {
+		char addInfo = cellInfo.charAt(1);
+		if("^v<>".contains(""+addInfo)) {
+			cell.setDoorway(true);
+			cell.setDoorDirection(addInfo);
+		}
+	}
+}
+
+
+
+
+------ Git log -----
+
+
+
+Used saros for pair programming
+
+
+commit f5933d131d8abc8ea59bdc4dc9c1b985e8d354d1
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:34:57 2020 -0600
+
+    Got rid of nested try-catch statements
+
+commit e796a62be00d31709d673c05a630eadc5cd1db0d
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:32:35 2020 -0600
+
+    Added more comments, including to calcTargets and 
+    recursivelyCalcTargets to explain them.
+
+commit 33db8ab1d3cc799480e60aaa4746bf2aae33002b
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:27:49 2020 -0600
+
+    Removed types from HashSet constructors in Room.java
+
+commit 7fe181e4fee371ac732f5f179d8b0b48e1c460a9
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:23:42 2020 -0600
+
+    Added logic to delete visited from branch after each recursion in recursivelyCalcTargets to save memory
+
+commit 20c3822e491fe78f6e67b3538ad8edef2f73bcdc
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:20:32 2020 -0600
+
+    Merged if-statements in setAdjLists
+
+commit 4cdfcb5b8ea8252ae763002284b6fd32f2476a53
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:18:16 2020 -0600
+
+    Removed unused variables from loadSetupFile
+
+commit bbf599b2e2e2b9162d066b416a9ff61f3b627440
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:15:20 2020 -0600
+
+    Fixed loadSetupConfig() equals statements to equalsIgnoreCase
+
+commit 40a40bb73143fff0fce1daef477de2cefb7276fd
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:06:33 2020 -0600
+
+    Removed unused local variables from setupCell
+
+commit 36626a782fcb91fd33a62d4f794e72836536bb67
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:04:49 2020 -0600
+
+    Fixed if-statements in setupCell in Board.java to 1 statement instead of 4
+
+commit b9fb46016c24c24b3cafcce472ac6e64c74ea294
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 17:43:17 2020 -0600
+
+    Starting point for C18A-2

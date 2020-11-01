@@ -14,23 +14,23 @@ import experiment.TestBoardCell;
 
 public class Board {
 
-	private int numRows;
-	private int numColumns;
+	public static final int NUM_PLAYERS = 6;
+	private int numRows, numColumns;
+	private String layoutConfigFile = "", setupConfigFile = "", loggerFile = "";
 	private BoardCell [][] grid;
-	private String layoutConfigFile = "";
-	private String setupConfigFile = "";
-	private String loggerFile = "";
 	private Set<BoardCell> targets;
-	private Map<Character,Room> roomDictionary = new HashMap<>();
-	private Map<Character,Room> spaceDictionary = new HashMap<>();
+	private Map<Character,Room> roomDictionary = new HashMap<>(), spaceDictionary = new HashMap<>();
 	private ArrayList<String[]> tempGrid = new ArrayList<>();
 	private static Board theInstance = new Board();
+	
+	private Solution theAnswer;
+	private ArrayList<Player> players = new ArrayList<>();
+	private Set<Card> deck = new HashSet<>();
 	
 	
 	private Board(){
 		super();
 	}
-	
 	
 	public static Board getInstance() {
 		return theInstance;
@@ -55,6 +55,12 @@ public class Board {
 		}
 		setupDoors();
 		setAdjLists();
+		// setupCards
+		// setupPlayers
+	}
+	
+	public void deal() {
+		// deals the cards to each player
 	}
 	
 	public void setupDoors() {

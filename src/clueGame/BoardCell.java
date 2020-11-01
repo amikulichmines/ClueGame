@@ -20,7 +20,8 @@ public class BoardCell{
 	private boolean roomLabel = false;
 	private boolean roomCenter = false;
 	private char secretPassage;
-	private Set<BoardCell> adjList = new HashSet<BoardCell>();
+	private Set<BoardCell> adjList = new HashSet<>();
+	
 
 	public BoardCell(int row, int col) { 
 		super();
