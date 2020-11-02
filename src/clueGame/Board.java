@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.io.*;
 
@@ -71,24 +72,29 @@ public class Board {
 	// randomly pick the Solution cards and shuffle the remaining cards in the deck
 	public void setupDeck() {
 		// Takes each of the card decks, shuffles them, then takes the top card.
-		Card personSolution = shuffle(people).iterator().next();
-		Card roomSolution = shuffle(rooms).iterator().next();
-		Card weaponSolution = shuffle(weapons).iterator().next();
-		
-		theAnswer = new Solution(personSolution, roomSolution, weaponSolution);
-		// Adds all the sets to one set, removes the solution cards, and shuffles it.
-		deck.addAll(people);
-		deck.addAll(rooms);
-		deck.addAll(weapons);
-		
-		deck.remove(personSolution);
-		deck.remove(roomSolution);
-		deck.remove(weaponSolution);
-		
-		deck = shuffle(deck);
+		try {
+			Card personSolution = shuffle(people).iterator().next();
+			Card roomSolution = shuffle(rooms).iterator().next();
+			Card weaponSolution = shuffle(weapons).iterator().next();
+			
+			theAnswer = new Solution(personSolution, roomSolution, weaponSolution);
+			// Adds all the sets to one set, removes the solution cards, and shuffles it.
+			deck.addAll(people);
+			deck.addAll(rooms);
+			deck.addAll(weapons);
+			
+			deck.remove(personSolution);
+			deck.remove(roomSolution);
+			deck.remove(weaponSolution);
+			
+			deck = shuffle(deck);
+		}catch(NoSuchElementException e){
+			System.out.println("No cards available");
+		}
 	}
 	
 	public LinkedHashSet<Card> shuffle(LinkedHashSet<Card> unshuffled) {
+		// Puts the cards into a new arraylist, then shuffles them.
 		List<Card> shuffled = new ArrayList<>(unshuffled);
 		Collections.shuffle(shuffled);
 		return new LinkedHashSet<>(shuffled);		
@@ -99,21 +105,33 @@ public class Board {
 		// Makes an iterator called topCard, then every time it deals, calls
 		// topCard.next(). Does this until three cards are dealt. If it runs 
 		// out of cards, it stops
-		topCard = deck.iterator();
-		int i = 0;
-		while(i<NUM_PLAYERS*3 && topCard.hasNext()) {
-			players.get(i%NUM_PLAYERS).updateHand(topCard.next());
-			i++;
+		if(!deck.isEmpty()) {
+			topCard = deck.iterator();
+			int i = 0;
+			while(i<NUM_PLAYERS*3 && topCard.hasNext()) {
+				players.get(i%NUM_PLAYERS).updateHand(topCard.next());
+				i++;
+			}
 		}
 	}
 	
 	public void setupPlayers() {
+		// get name and color from dictionary
 		// set up 1 human player
-		players.add(new HumanPlayer("Player 1",0,0,"black"));
+		
 		// set up remaining players as computer players
-		for (int i = 1; i < NUM_PLAYERS; i++) {
-			players.add(new ComputerPlayer("",0,i,"green"));
+		// iterate through dictionary, skipping person chosen by human player
+		int i = 0;
+		for (Map.Entry<String, String> it : peopleDictionary.entrySet()) {
+			if(i!=0) {
+				players.add(new ComputerPlayer(it.getKey(),0,0,it.getValue()));
+			}
+			else {
+				players.add(new HumanPlayer(it.getKey(),0,0,it.getValue()));
+			}
+			i++;
 		}
+		
 	}
 	
 	public void setupDoors() {
