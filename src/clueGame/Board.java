@@ -1,8 +1,12 @@
 package clueGame;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.io.*;
@@ -20,12 +24,17 @@ public class Board {
 	private BoardCell [][] grid;
 	private Set<BoardCell> targets;
 	private Map<Character,Room> roomDictionary = new HashMap<>(), spaceDictionary = new HashMap<>();
+	private	Map<String, String> peopleDictionary = new HashMap<>();
 	private ArrayList<String[]> tempGrid = new ArrayList<>();
 	private static Board theInstance = new Board();
 	
 	private Solution theAnswer;
-	private ArrayList<Player> players = new ArrayList<>();
-	private Set<Card> deck = new HashSet<>();
+	private ArrayList<Player> players;
+	private LinkedHashSet<Card> deck;
+	private LinkedHashSet<Card> weapons;
+	private LinkedHashSet<Card> people;
+	private LinkedHashSet<Card> rooms;
+	private Iterator<Card> topCard;
 	
 	
 	private Board(){
@@ -41,11 +50,15 @@ public class Board {
 		roomDictionary = new HashMap<>();
 		spaceDictionary = new HashMap<>();
 		tempGrid = new ArrayList<>();
+		deck = new LinkedHashSet<>();
+		weapons = new LinkedHashSet<>();
+		people = new LinkedHashSet<>();
+		rooms = new LinkedHashSet<>();
+		players = new ArrayList<>();
 		numColumns = 0;
 		loadConfigFiles();
 		grid = new BoardCell[numRows][numColumns];
 		BoardCell [] row;
-		BoardCell cell;
 		for(int r=0; r<numRows; r++) { 			// rows
 			row = new BoardCell[numColumns];
 			for(int c=0; c<numColumns; c++){ 	// columns
@@ -55,12 +68,57 @@ public class Board {
 		}
 		setupDoors();
 		setAdjLists();
-		// setupCards
-		// setupPlayers
+		setupPlayers();
+		setupDeck(); 	
+		deal();		
 	}
 	
+	// randomly pick the Solution cards and shuffle the remaining cards in the deck
+	public void setupDeck() {
+		// Takes each of the card decks, shuffles them, then takes the top card.
+		Card personSolution = shuffle(people).iterator().next();
+		Card roomSolution = shuffle(rooms).iterator().next();
+		Card weaponSolution = shuffle(weapons).iterator().next();
+		
+		theAnswer = new Solution(personSolution, roomSolution, weaponSolution);
+		// Adds all the sets to one set, removes the solution cards, and shuffles it.
+		deck.addAll(people);
+		deck.addAll(rooms);
+		deck.addAll(weapons);
+		
+		deck.remove(personSolution);
+		deck.remove(roomSolution);
+		deck.remove(weaponSolution);
+		
+		deck = shuffle(deck);
+	}
+	
+	public LinkedHashSet<Card> shuffle(LinkedHashSet<Card> unshuffled) {
+		List<Card> shuffled = new ArrayList<>(unshuffled);
+		Collections.shuffle(shuffled);
+		return new LinkedHashSet<>(shuffled);		
+	}
+	
+	// deal the cards to the players (excluding the Solution cards)
 	public void deal() {
-		// deals the cards to each player
+		// Makes an iterator called topCard, then every time it deals, calls
+		// topCard.next(). Does this until three cards are dealt. If it runs 
+		// out of cards, it stops
+		topCard = deck.iterator();
+		int i = 0;
+		while(i<NUM_PLAYERS*3 && topCard.hasNext()) {
+			players.get(i%NUM_PLAYERS).updateHand(topCard.next());
+			i++;
+		}
+	}
+	
+	public void setupPlayers() {
+		// set up 1 human player
+		players.add(new HumanPlayer("Player 1",0,0,"black"));
+		// set up remaining players as computer players
+		for (int i = 1; i < NUM_PLAYERS; i++) {
+			players.add(new ComputerPlayer("",0,i,"green"));
+		}
 	}
 	
 	public void setupDoors() {
@@ -167,24 +225,33 @@ public class Board {
 			BufferedReader reader = new BufferedReader(new FileReader(setupConfigFile));
 			String line = "";
 			while (line != null) {
-				line = reader.readLine(); 
+				line = reader.readLine();
 				if(line == null)
 					break;
-				if(line.indexOf("/") < 0) { // Don't parse if the line is commented with a '//'. 
+				line = line.strip();
+				if(line.indexOf("/") < 0 && !line.equals("")) { // Parse if the line is not commented with a '//' AND If the line is not empty
 					String[] array = line.split(",");
-					for (int i = 0; i<array.length; i++) {
+					for (int i = 0; i<array.length; i++) {	// clean extra whitespace
 						array[i] = array[i].strip();
 					}
-					if (array.length != 3 || array[2].length() != 1) {
+					if(array[0].equalsIgnoreCase("WEAPON")){
+						weapons.add(new Card(array[1], CardType.WEAPON));
+					}
+					else if (array.length != 3) {
 						throw new BadConfigFormatException();
 					}
-					if (array[0].equalsIgnoreCase("SPACE")) {
+					if(array[0].equalsIgnoreCase("PEOPLE")){
+						// Add to peopleDictionary
+						peopleDictionary.put(array[1],array[2]);
+						// Make people card
+						people.add(new Card(array[1], CardType.PERSON));
+					}
+					else if (array[0].equalsIgnoreCase("SPACE")) {
 						spaceDictionary.put(array[2].charAt(0), new Room(array[1]));
 					} else if (array[0].equalsIgnoreCase("ROOM")) {
-						
+						rooms.add(new Card(array[1], CardType.ROOM));
 						roomDictionary.put(array[2].charAt(0), new Room(array[1]));
-					} else 
-						throw new BadConfigFormatException();
+					} 
 				}
 			} 
 	
@@ -362,6 +429,7 @@ public class Board {
 		}
 	}
 	
+
 	public Room getRoom(BoardCell cell) {
 		char roomKey = cell.getInitial();
 		if (roomDictionary.containsKey(roomKey)){
@@ -374,4 +442,41 @@ public class Board {
 	public Set<BoardCell> getAdjList(int row, int col) {
 		return grid[row][col].getAdjList();
 	}
+	
+	/*************************************************************************
+	 * For Testing
+	 *************************************************************************/
+	
+	public int getPlayerListSize() {
+		return players.size();
+	}
+	
+	public Player getPlayer(int index) {
+		return players.get(index);
+	}
+	
+	public Map<String, String> getPeopleDict() {
+		return peopleDictionary;
+	}
+	
+	public LinkedHashSet<Card> getDeck() {
+		return deck;
+	}
+	
+	public LinkedHashSet<Card> getWeapons() {
+		return weapons;
+	}
+	
+	public LinkedHashSet<Card> getPeople() {
+		return people;
+	}
+	
+	public LinkedHashSet<Card> getRooms() {
+		return rooms;
+	}
+	
+	public Solution getSolution() {
+		return theAnswer;
+	}
+	
 }

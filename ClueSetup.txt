@@ -11,7 +11,6 @@ Room, Foyer, F
 // Other spaces on the board
 Space, Hallway, H
 Space, Unused, X
-
 // People
 People, Professor Plum, purple
 People, Colonel Mustard, yellow
@@ -19,7 +18,6 @@ People, Miss Scarlet, red
 People, Mrs. White, white
 People, Reverend Green, green
 People, Mrs. Peacock, blue
-
 //Weapons
 Weapon, Revolver
 Weapon, Dagger 
@@ -27,5 +25,3 @@ Weapon, Lead Pipe
 Weapon, Rope
 Weapon, Candlestick
 Weapon, Wrench
-
-
