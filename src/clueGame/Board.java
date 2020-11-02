@@ -10,11 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.io.*;
-import java.lang.System.Logger;
-import java.util.regex.*;
-
-import clueGame.BoardCell;
-import experiment.TestBoardCell;
 
 public class Board {
 
