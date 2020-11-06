@@ -42,6 +42,8 @@ public class Board {
 	}
 
 	public void initialize() {
+		
+		//Reinitialize variables
 		targets = new HashSet<>();
 		roomDictionary = new HashMap<>();
 		spaceDictionary = new HashMap<>();
@@ -52,6 +54,7 @@ public class Board {
 		rooms = new LinkedHashSet<>();
 		players = new ArrayList<>();
 		numColumns = 0;
+		
 		loadConfigFiles();
 		grid = new BoardCell[numRows][numColumns];
 		BoardCell [] row;
