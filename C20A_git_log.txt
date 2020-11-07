@@ -1,0 +1,221 @@
+commit 37387fce061ee73b45a6c7625c1ef98a4e900a04
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Nov 6 21:11:53 2020 -0700
+
+    Finished tests
+
+commit 1b8efbbc3e8deea72b89bfeb83738382ce419f7f
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Nov 6 18:15:51 2020 -0700
+
+    Added first tests
+
+commit a2abfd9553cea7c611d9c536a39c57c1ea588a04
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Nov 6 16:27:23 2020 -0700
+
+    Added method declarations to match UML
+
+commit 138556ac961c66762371aece946bbdcfd3fa361b
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Sun Nov 1 21:26:26 2020 -0700
+
+    Refactored
+
+commit bf82afcabdcfe5bb3d97e755b5fbd19fb3e521a3
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Sun Nov 1 21:07:07 2020 -0700
+
+    Refactored and took out useless code
+
+commit 6874625527f15bf2944a5b49df3cc32c41f07b00
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Sun Nov 1 21:05:48 2020 -0700
+
+    Added comments
+
+commit 4ed6bd46301bd9267625cc773e1edab667f67ebc
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Sun Nov 1 21:03:34 2020 -0700
+
+    Made tests to run
+
+commit 5d7f3f45cc601b3d589d41ba524f8768b360061c
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Sun Nov 1 16:30:22 2020 -0700
+
+    Added Solution, CardType, Card, Player classes
+
+commit f5933d131d8abc8ea59bdc4dc9c1b985e8d354d1
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:34:57 2020 -0600
+
+    Got rid of nexted try-catch statements
+
+commit e796a62be00d31709d673c05a630eadc5cd1db0d
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:32:35 2020 -0600
+
+    Added more comments
+
+commit 33db8ab1d3cc799480e60aaa4746bf2aae33002b
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:27:49 2020 -0600
+
+    Removed types from HashSet constructors in Room.java
+
+commit 7fe181e4fee371ac732f5f179d8b0b48e1c460a9
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:23:42 2020 -0600
+
+    Added logic to delete visited from branch after each recursion in recursivelyCalcTargets to save memory
+
+commit 20c3822e491fe78f6e67b3538ad8edef2f73bcdc
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:20:32 2020 -0600
+
+    Merged if-statements in setAdjLists
+
+commit 4cdfcb5b8ea8252ae763002284b6fd32f2476a53
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:18:16 2020 -0600
+
+    Removed unused variables from loadSetupFile
+
+commit bbf599b2e2e2b9162d066b416a9ff61f3b627440
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:15:20 2020 -0600
+
+    Fixed loadSetupConfig() equals statements to equalsIgnoreCase
+
+commit 40a40bb73143fff0fce1daef477de2cefb7276fd
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:06:33 2020 -0600
+
+    Removed unused local variables from setupCell
+
+commit 36626a782fcb91fd33a62d4f794e72836536bb67
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 18:04:49 2020 -0600
+
+    Fixed if-statements in setupCell in Board.java to 1 statement instead of 4
+
+commit b9fb46016c24c24b3cafcce472ac6e64c74ea294
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Thu Oct 29 17:43:17 2020 -0600
+
+    Starting point for C18A-2
+
+commit 44a0d156cdc923b31f5894da57fc2fd257da3607
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Oct 16 22:01:07 2020 -0600
+
+    Added comments
+
+commit 3730841b38a31befe67b0a742d6110dcbafd4678
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Oct 16 21:33:15 2020 -0600
+
+    uncommented some tests
+
+commit a24d3f2567e428d61dd57c2d3d455d0ad7083767
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Oct 16 21:19:06 2020 -0600
+
+    Modified loading functions in board.java to throw exceptions
+
+commit 91b6ce2e36bd96e39306b66e2da530b9995a9f52
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Oct 16 19:54:59 2020 -0600
+
+    Updated code to pass test 6
+
+commit 656a4eae21e79fdea05c2ebcd960219d2d5a2f40
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Oct 16 19:54:05 2020 -0600
+
+    Updated to code to pass test 5
+
+commit b1025fc89d74d1a1d600128315c9fe05c720e50a
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Tue Oct 13 20:31:26 2020 -0600
+
+    Finished the tests so that all passed
+
+commit 6413b073ebfa2317c41192a6105545610ee8f4e7
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Tue Oct 13 20:09:59 2020 -0600
+
+    Fixed some of the tests
+
+commit 94815127f0becde0b31ee3239e927a9f535d67f2
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Tue Oct 13 17:36:37 2020 -0600
+
+    Added recursively calculate targets function to pass the test
+
+commit 94dbfd4b011d85c1b1ea836149808ab1969dde40
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Sat Oct 10 16:08:54 2020 -0600
+
+    Finished the assignment
+
+commit 9afdc43f6d25afee44728d7ec34cfdd8f8840af8
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Sat Oct 10 12:14:48 2020 -0600
+
+    Added setupCsvs functionality
+
+commit bcc31abe684bb813c0f2487fa7792b6fc70f87fb
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Oct 9 16:56:18 2020 -0600
+
+    Got targets tests to work
+
+commit 3e8d463a7ffc0328940240ca0b90b503b41f15c4
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Oct 9 16:55:34 2020 -0600
+
+    got the adjlists tests finished
+
+commit 1e22dcd51fb28091cb2a7c949ba5b3707d612d2d
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Wed Oct 7 18:51:29 2020 -0600
+
+    Finished writing the FileInitTest
+
+commit d707f800c942019f5e8a4d1f7c61811da56d9553
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Wed Oct 7 18:05:34 2020 -0600
+
+    Added files in the test directory
+
+commit 8583f6e221e79c6a823fbf8724c2ffc9c1bfeabe
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Mon Oct 5 20:23:19 2020 -0600
+
+    Fixed the tests and changed sets to hashsets
+
+commit e7c20f735ffc4e779e25da0ba46f87756c2e4c4b
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Mon Oct 5 20:00:18 2020 -0600
+
+    Finished the tests
+
+commit fd8d74ba300ec5fe6292359b2e7061531e7ef605
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Mon Oct 5 18:44:19 2020 -0600
+
+    Finished up TestBoard and TestBoardCell with stubs
+
+commit 7e901dfda444ee3f251d2e82c49f3fdd800f6237
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Mon Oct 5 16:57:53 2020 -0600
+
+    Added testBoard and testBoardCell classes
+
+commit b2ab6538ffd3c8d933cf01d217c4c62910a1718d
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Mon Oct 5 16:13:13 2020 -0600
+
+    First commit

@@ -119,7 +119,7 @@ class GameSolutionTest {
 		computer1.setAllCards(allPeople, allWeapons, allRooms);
 		Solution solution = computer1.createSuggestion(board.getGrid());
 		
-		// We put the player in the conservatory, so room should be conservatory
+		// We put the player in the cookplace, so room should be cookplace
 		
 		assertTrue(solution.room.getCardName().equals("Cookplace"));
 		
@@ -149,13 +149,26 @@ class GameSolutionTest {
 		}
 		assertFalse(suggestions1 == suggestions2);
 		
+		// If multiple unseen people, randomize it. The allPeople set has 
+		// both Phil Swift and Derek Baum, with neither of them seen.
+		computer1 = new ComputerPlayer("Comp1",3,2,"Blue");
+		computer2 = new ComputerPlayer("Comp2",3,2,"Green");
+		computer2.setAllCards(allPeople, allWeapons, allRooms);
+		computer1.setAllCards(allPeople, allWeapons, allRooms);
+		suggestions1 =  new Card[100];
+		suggestions2 =  new Card[100];
+		for(int i = 0; i<100; i++) {
+			suggestions1[i]=computer1.createSuggestion(board.getGrid()).person;
+			suggestions2[i]=computer2.createSuggestion(board.getGrid()).person;
+		}
+		assertFalse(suggestions1 == suggestions2);
 
 	}
 	
 	@Test
 	void testComputerSelectTarget() {
 		Card person = new Card("Derek Baum", CardType.PERSON);
-		Card room = new Card("Cookplace", CardType.ROOM);
+		Card room = new Card("Basement", CardType.ROOM);
 		Card weapon = new Card("Gun", CardType.WEAPON);
 		
 		ComputerPlayer computer1 = new ComputerPlayer("Comp1", 3, 2, "Blue");
@@ -200,7 +213,8 @@ class GameSolutionTest {
 		board.calcTargets(board.getGrid()[10][16], 1);
 		targets = board.getTargets();
 		computer1.updateSeen(new Card("Basement", CardType.ROOM));
-		// If there are no rooms, pick randomly
+		
+		
 		suggestions1 =  new String[100];
 		suggestions2 =  new String[100];
 		for(int i = 0; i<100; i++) {

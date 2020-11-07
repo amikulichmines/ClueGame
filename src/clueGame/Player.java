@@ -39,6 +39,8 @@ public abstract class Player {
 
 
 	public void setAllCards(Set<Card> allPeople, Set<Card> allWeapons, Set<Card> allRooms) {
+		// The player needs to know all the options to choose from: rooms,
+		// people, and weapons. This also initializes the unseen set.
 		people = allPeople;
 		rooms = allRooms;
 		weapons = allWeapons;
@@ -53,21 +55,32 @@ public abstract class Player {
 	}
 	
 	public void updateSeen(Card seenCard) {
+		// If you see a card, add it to the seen set and remove from the 
+		// unseen set. It removes it based on the name, as a copy will not 
+		// be removed with the .remove() function.
 		seen.add(seenCard);
-		unseen.remove(seenCard);
+		Card cardToRemove = null;
+		for(Card u : unseen){
+			if(u.getCardName().equals(seenCard.getCardName()))
+				cardToRemove=u;
+		}
+		unseen.remove(cardToRemove);
 	}
 	
 	public Card disproveSuggestion(Solution suggestion) {
+		// First add the cards in the solution to a set.
 		Set<String> suggestionCards = new HashSet<>();
 		suggestionCards.add(suggestion.room.getCardName());
 		suggestionCards.add(suggestion.weapon.getCardName());
 		suggestionCards.add(suggestion.person.getCardName());
 		ArrayList<Card> matchingCards = new ArrayList<>();
+		// Find any matching cards
 		for(Card card : hand) {
 			if (suggestionCards.contains(card.getCardName())) {
 				matchingCards.add(card);
 			}
 		}
+		// If there are any, return a random one
 		if(!matchingCards.isEmpty())
 			return matchingCards.get(ThreadLocalRandom.current().nextInt(0, matchingCards.size()));
 		return null;
