@@ -1,9 +1,10 @@
 package clueGame;
 
 import java.awt.Color;
-
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Player {
 	protected int row, column, playerIndex;
@@ -57,14 +58,19 @@ public abstract class Player {
 	}
 	
 	public Card disproveSuggestion(Solution suggestion) {
-		Set<Card> suggestionCards = new HashSet<>(suggestion.person, suggestion.room, suggestion.weapon);
+		Set<String> suggestionCards = new HashSet<>();
+		suggestionCards.add(suggestion.room.getCardName());
+		suggestionCards.add(suggestion.weapon.getCardName());
+		suggestionCards.add(suggestion.person.getCardName());
+		ArrayList<Card> matchingCards = new ArrayList<>();
 		for(Card card : hand) {
-			if (suggestionCards.contains(card)) {
-				return card;
+			if (suggestionCards.contains(card.getCardName())) {
+				matchingCards.add(card);
 			}
 		}
-		System.out.println("Error! Can't disprove");
-		return new Card("Invalid card", CardType.PERSON);
+		if(!matchingCards.isEmpty())
+			return matchingCards.get(ThreadLocalRandom.current().nextInt(0, matchingCards.size()));
+		return null;
 	}
 	
 	public abstract void setColor(String colorName);
@@ -94,6 +100,10 @@ public abstract class Player {
 
 	public Set<Card> getHand() {
 		return hand;
+	}
+	
+	public void setHand(Set<Card> hand) {
+		this.hand = hand;
 	}
 	
 }

@@ -80,27 +80,20 @@ public class Board {
 	
 	// returns a card that matches one of the suggested cards, if there are any in the other players' hands, else returns null (to show there was no match)
 	public Card handleSuggestion(String person, String room, String weapon, Player player) {
+		Card culprit = new Card(person, CardType.PERSON);
+		Card deathRoom = new Card(room, CardType.ROOM);
+		Card murderWeapon = new Card(weapon, CardType.WEAPON);
+		Solution suggestion = new Solution(culprit, deathRoom, murderWeapon);
 		int playerTracker = player.getPlayerIndex();	// Tracking int to see which player will attempt to refute the suggestion next
 		for(int i = 0; i < NUM_PLAYERS-1; i++) {		// NUM_PLAYERS-1 is used to exclude the player who put up the suggestion
 			playerTracker++;
 			if (playerTracker >= NUM_PLAYERS) {	// cycles back around to the beginning of players
 				playerTracker -= NUM_PLAYERS;
 			}
-			// if any of the inputs are in the player's hand.... (creates a set of matches)
-			Set<Card> matchHand = player.getHand();
-			for (Card card : matchHand) {
-				if (!card.getCardName().equals(room) && !card.getCardName().equals(weapon) && !card.getCardName().equals(weapon)) {
-					matchHand.remove(card);
-				}
-			}
-			// if there is at least one matching card, returns a random one
-			if (!matchHand.isEmpty()) {	
-				int randInt = new Random().nextInt(matchHand.size()), iter = 0;
-				for (Card randCard : matchHand) {
-					if (iter == randInt) {
-						return randCard;
-					}
-				}
+			// Checks if the player has a matching card, and returns a random one if they do
+			Card match = players.get(playerTracker).disproveSuggestion(suggestion);
+			if (match != null) {
+				return match;
 			}
 		}
 		return null;
@@ -223,6 +216,7 @@ public class Board {
 					}
 					else if(addInfo == '*') {
 						cell.setRoomCenter(true);
+						cell.setRoomName(roomDictionary.get(roomKey).getName());
 						roomDictionary.get(roomKey).setCenterCell(cell);
 					}
 					else if((addInfo+"").matches("[A-Z]")){
@@ -537,5 +531,8 @@ public class Board {
 		this.theAnswer = theAnswer;
 	}
 	
+	public BoardCell[][] getGrid(){
+		return grid;
+	}
 	
 }

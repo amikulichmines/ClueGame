@@ -120,15 +120,15 @@ public class BoardCell{
 	
 	
 	public String toString() {
-		String adjacents = "";
-		for (BoardCell cell : adjList) {
-			adjacents += "Row: "+ cell.row + "   Col: " + cell.col + "\n";
-		}
-		return ("Row: "+row+"   Col: "+col+"\nAdjacency List:\n"+adjacents+"\n\n");		
+		return ("Row: "+row+", Col: "+col);		
 	}
 	
 	public String getRoomName() {
 		return roomName;
+	}
+	
+	public void setRoomName(String name) {
+		roomName = name;
 	}
 	
 }
