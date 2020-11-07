@@ -21,6 +21,7 @@ public class BoardCell{
 	private boolean roomCenter = false;
 	private char secretPassage;
 	private Set<BoardCell> adjList = new HashSet<>();
+	private String roomName = "";
 	
 
 	public BoardCell(int row, int col) { 
@@ -124,6 +125,10 @@ public class BoardCell{
 			adjacents += "Row: "+ cell.row + "   Col: " + cell.col + "\n";
 		}
 		return ("Row: "+row+"   Col: "+col+"\nAdjacency List:\n"+adjacents+"\n\n");		
+	}
+	
+	public String getRoomName() {
+		return roomName;
 	}
 	
 }

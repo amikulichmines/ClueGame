@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.Set;
 import java.io.*;
 
@@ -43,7 +44,7 @@ public class Board {
 
 	public void initialize() {
 		
-		//Reinitialize variables
+		// (Re)initialize variables
 		targets = new HashSet<>();
 		roomDictionary = new HashMap<>();
 		spaceDictionary = new HashMap<>();
@@ -70,6 +71,39 @@ public class Board {
 		setupPlayers();
 		setupDeck(); 	
 		deal();		
+	}
+	
+	// returns TRUE if each of the person, room, and weapon in the accusation are correct; else returns FALSE
+	public boolean checkAccusation(String person, String room, String weapon) {
+		return ((person.equals(theAnswer.getPerson().getCardName())) && room.equals(theAnswer.getRoom().getCardName()) && weapon.equals(theAnswer.getWeapon().getCardName()));
+	}
+	
+	// returns a card that matches one of the suggested cards, if there are any in the other players' hands, else returns null (to show there was no match)
+	public Card handleSuggestion(String person, String room, String weapon, Player player) {
+		int playerTracker = player.getPlayerIndex();	// Tracking int to see which player will attempt to refute the suggestion next
+		for(int i = 0; i < NUM_PLAYERS-1; i++) {		// NUM_PLAYERS-1 is used to exclude the player who put up the suggestion
+			playerTracker++;
+			if (playerTracker >= NUM_PLAYERS) {	// cycles back around to the beginning of players
+				playerTracker -= NUM_PLAYERS;
+			}
+			// if any of the inputs are in the player's hand.... (creates a set of matches)
+			Set<Card> matchHand = player.getHand();
+			for (Card card : matchHand) {
+				if (!card.getCardName().equals(room) && !card.getCardName().equals(weapon) && !card.getCardName().equals(weapon)) {
+					matchHand.remove(card);
+				}
+			}
+			// if there is at least one matching card, returns a random one
+			if (!matchHand.isEmpty()) {	
+				int randInt = new Random().nextInt(matchHand.size()), iter = 0;
+				for (Card randCard : matchHand) {
+					if (iter == randInt) {
+						return randCard;
+					}
+				}
+			}
+		}
+		return null;
 	}
 	
 	// randomly pick the Solution cards and shuffle the remaining cards in the deck
@@ -127,10 +161,14 @@ public class Board {
 		int i = 0;
 		for (Map.Entry<String, String> it : peopleDictionary.entrySet()) {
 			if(i!=0) {
-				players.add(new ComputerPlayer(it.getKey(),0,0,it.getValue()));
+				Player player = new ComputerPlayer(it.getKey(),0,0,it.getValue());
+				player.setPlayerIndex(i);
+				players.add(player);
 			}
 			else {
-				players.add(new HumanPlayer(it.getKey(),0,0,it.getValue()));
+				Player player = new HumanPlayer(it.getKey(),0,0,it.getValue());
+				player.setPlayerIndex(i);
+				players.add(player);
 			}
 			i++;
 		}
@@ -494,5 +532,10 @@ public class Board {
 	public Solution getSolution() {
 		return theAnswer;
 	}
+
+	public void setTheAnswer(Solution theAnswer) {
+		this.theAnswer = theAnswer;
+	}
+	
 	
 }
