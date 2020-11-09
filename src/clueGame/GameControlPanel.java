@@ -34,7 +34,7 @@ public class GameControlPanel extends JPanel {
 		// returns a panel with one entry
 		JPanel resultPanel = new JPanel();
 		resultPanel.setBorder(new TitledBorder (new EtchedBorder(), "Guess result"));
-		theResult.setEditable(b);
+		theResult.setEditable(false);
 		resultPanel.add(theResult);
 		return resultPanel;
 	}

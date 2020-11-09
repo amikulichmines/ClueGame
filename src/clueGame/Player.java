@@ -14,7 +14,10 @@ public abstract class Player {
 	private Color color;
 	protected Set<Card> hand = new HashSet<>();
 	protected Set<Card> seen = new HashSet<>();
+	protected Set<Card> seenPeople = new HashSet<>(), seenRooms = new HashSet<>(), seenWeapons = new HashSet<>();
+	protected Set<Card> peopleInHand = new HashSet<>(), roomsInHand = new HashSet<>(), weaponsInHand = new HashSet<>();
 	protected Set<Card> unseen = new HashSet<>();
+	
 	
 	protected static Set<Card> people, rooms, weapons;
 	
@@ -26,13 +29,9 @@ public abstract class Player {
 		setColor(color);
 	}
 	
-	
-	
 	public int getPlayerIndex() {
 		return playerIndex;
 	}
-
-
 
 	public void setPlayerIndex(int playerIndex) {
 		this.playerIndex = playerIndex;
@@ -51,7 +50,29 @@ public abstract class Player {
 		unseen.addAll(rooms);
 	}
 	
+	public void separateCards() {
+		for (Card card : seen) {
+			if(card.getType()==CardType.PERSON && !hand.contains(card))
+				seenPeople.add(card);
+			if(card.getType()==CardType.ROOM && !hand.contains(card))
+				seenRooms.add(card);
+			if(card.getType()==CardType.WEAPON && !hand.contains(card))
+				seenWeapons.add(card);
+		}
+		for (Card card : hand) {
+			if(card.getType()==CardType.PERSON)
+				peopleInHand.add(card);
+			if(card.getType()==CardType.ROOM)
+				roomsInHand.add(card);
+			if(card.getType()==CardType.WEAPON)
+				weaponsInHand.add(card);
+		}
+	}
+	
+	
+
 	public void updateHand(Card card) {
+		card.setColor(this.getColor()); // sets the card's color to the player's color (this player has this card in hand)
 		hand.add(card);
 		updateSeen(card);
 	}
@@ -96,6 +117,31 @@ public abstract class Player {
 			color = null; // Not defined
 		}
 	}
+	
+	public Set<Card> getSeenPeople() {
+		return seenPeople;
+	}
+	
+	public Set<Card> getSeenRooms() {
+		return seenRooms;
+	}
+	
+	public Set<Card> getSeenWeapons() {
+		return seenWeapons;
+	}
+	
+	public Set<Card> getPeopleInHand() {
+		return peopleInHand;
+	}
+	
+	public Set<Card> getRoomsInHand() {
+		return roomsInHand;
+	}
+	
+	public Set<Card> getWeaponsInHand() {
+		return weaponsInHand;
+	}
+	
 	/**************************************************
 	 * For Testing
 	 **************************************************/

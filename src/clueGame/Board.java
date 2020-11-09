@@ -93,6 +93,7 @@ public class Board {
 			// Checks if the player has a matching card, and returns a random one if they do
 			Card match = players.get(playerTracker).disproveSuggestion(suggestion);
 			if (match != null) {
+				match.setColor(player.getColor());
 				return match;
 			}
 		}

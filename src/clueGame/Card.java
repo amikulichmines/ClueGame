@@ -1,8 +1,11 @@
 package clueGame;
 
+import java.awt.Color;
+
 public class Card{
 	private String cardName;
 	private CardType type;
+	private Color color;
 	
 	public Card(String cardName, CardType type) {
 		super();
@@ -20,5 +23,13 @@ public class Card{
 	
 	public boolean equals(Card target) {
 		return (target.cardName.equals(cardName));
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
+	}
+	
+	public Color getColor() {
+		return color;
 	}
 }
