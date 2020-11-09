@@ -12,7 +12,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 public class GameControlPanel extends JPanel {
-	private String turn;
 	private JTextField theGuess = new JTextField(20);
 	private JTextField theResult = new JTextField(20), currentTurn;
 	private JTextField theRoll = new JTextField(5);
@@ -24,6 +23,7 @@ public class GameControlPanel extends JPanel {
 	}
 
 	private JPanel createGuessPanel() {
+		// returns a panel with one entry
 		JPanel guessPanel = new JPanel();
 		guessPanel.setBorder(new TitledBorder (new EtchedBorder(), "Guess"));
 		guessPanel.add(theGuess);
@@ -31,26 +31,32 @@ public class GameControlPanel extends JPanel {
 	}
 	
 	private JPanel createGuessResultPanel() {
+		// returns a panel with one entry
 		JPanel resultPanel = new JPanel();
-		theResult = new JTextField(20);
 		resultPanel.setBorder(new TitledBorder (new EtchedBorder(), "Guess result"));
+		theResult.setEditable(b);
 		resultPanel.add(theResult);
 		return resultPanel;
 	}
 	
 	private JPanel createWhoseTurnPanel() {
+		// Makes a panel with two entries, the label and text
 		JPanel whoseTurnPanel = new JPanel(new GridLayout(4,0));
 		JLabel whoseTurn = new JLabel("Whose turn?");
 		whoseTurnPanel.add(whoseTurn);
 		currentTurn = new JTextField(10);
+		currentTurn.setEditable(false);
 		whoseTurnPanel.add(currentTurn);
 		return whoseTurnPanel;
 	}
 	
 	private JPanel createRollPanel() {
+		// Makes two things, a label for the roll and the text box.
+		// it adds them side by side
 		JPanel rollPanel = new JPanel();
 		JLabel roll = new JLabel("Roll");
 		rollPanel.add(roll);
+		theRoll.setEditable(false);
 		rollPanel.add(theRoll);
 		return rollPanel;
 	}
@@ -89,7 +95,6 @@ public class GameControlPanel extends JPanel {
 	
 	void setGuessResult(String result) {
 		theResult.setText(result);
-		
 	}
 
 	void setGuess(String guess) {
