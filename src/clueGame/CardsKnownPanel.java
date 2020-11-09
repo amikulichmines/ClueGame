@@ -67,8 +67,8 @@ public class CardsKnownPanel extends JPanel {
 	}
 	
 	private JPanel populatePanel(Set<Card> set) {
-		JPanel panel = new JPanel(new GridLayout(0,1));
 		JTextField thePerson;
+		JPanel panel = new JPanel(new GridLayout(0,1));
 		if (set.isEmpty()) {
 			thePerson = new JTextField(20);
 			thePerson.setText("None");

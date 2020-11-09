@@ -28,14 +28,15 @@ public class ClueGUI extends JFrame{
 	}
 	
 	public static void main(String[] args) {
-		ComputerPlayer player = new ComputerPlayer("Professor Plum", 0, 0, "Red");
+		HumanPlayer player = new HumanPlayer("Professor Plum", 0, 0, "Red");
 		
 		// These cards will be in the hand, and their color set to the player's color
 		Card revolver = new Card("Revolver", CardType.WEAPON);
 		Card rope = new Card("Rope", CardType.WEAPON);
 		Card attic = new Card("Attic", CardType.ROOM);
 		
-		// These cards w
+		// These cards will be seen by the player, and have their own colors
+		// (these colors would be the colors of the players who showed them in the game)
 		Card cookplace = new Card("Cookplace", CardType.ROOM);
 		cookplace.setColor(Color.yellow);
 		Card mustard = new Card("Colonel Mustard", CardType.PERSON);
@@ -46,6 +47,7 @@ public class ClueGUI extends JFrame{
 		player.updateHand(attic);
 		player.updateHand(revolver);
 		player.updateHand(rope);
+		
 		player.updateSeen(cookplace);
 		player.updateSeen(mustard);
 		player.updateSeen(leadPipe);
