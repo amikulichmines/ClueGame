@@ -1,3 +1,11 @@
+Used Saros for pair programming
+
+commit 5d68b0731222bed85b89d8a4201c1890e559752d
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Nov 6 21:48:05 2020 -0700
+
+    Added comments
+
 commit 37387fce061ee73b45a6c7625c1ef98a4e900a04
 Author: amikulichmines <amikulich@mymail.mines.edu>
 Date:   Fri Nov 6 21:11:53 2020 -0700

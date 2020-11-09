@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import java.lang.reflect.Field;
+
 public abstract class Player {
 	protected int row, column, playerIndex;
 	private String name;//, colorName;
@@ -86,11 +88,14 @@ public abstract class Player {
 		return null;
 	}
 	
-	public abstract void setColor(String colorName);
-	// There will likely be a different way to set colors to humans vs computers.
-	// We will make humans able to choose color, while the computers will be 
-	// random. Thus, this is implemented in child classes.
-	
+	public void setColor(String colorName) {
+		try {
+		    Field field = Color.class.getField(colorName.toLowerCase());
+		    color = (Color)field.get(null);
+		} catch (Exception e) {
+			color = null; // Not defined
+		}
+	}
 	/**************************************************
 	 * For Testing
 	 **************************************************/
