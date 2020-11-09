@@ -35,6 +35,7 @@ public class ClueGUI extends JFrame{
 		Card rope = new Card("Rope", CardType.WEAPON);
 		Card attic = new Card("Attic", CardType.ROOM);
 		
+		// These cards w
 		Card cookplace = new Card("Cookplace", CardType.ROOM);
 		cookplace.setColor(Color.yellow);
 		Card mustard = new Card("Colonel Mustard", CardType.PERSON);
