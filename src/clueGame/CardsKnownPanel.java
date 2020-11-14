@@ -76,6 +76,7 @@ public class CardsKnownPanel extends JPanel {
 			thePerson.setEditable(false);
 			panel.add(thePerson);
 		}
+		
 		else for (Card card : set) {
 			thePerson = new JTextField(20);
 			thePerson.setText(card.getCardName());

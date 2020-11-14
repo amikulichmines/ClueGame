@@ -1,11 +1,15 @@
 package clueGame;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.JPanel;
+
 import experiment.TestBoardCell;
 
-public class BoardCell{
+public class BoardCell extends JPanel{
 
 	/*
 	 * This class represents one cell in a grid.
@@ -17,12 +21,14 @@ public class BoardCell{
 	private boolean doorway = false;
 	private boolean isOccupied = false;
 	private boolean isRoom = false;
+	private boolean isUnused = false;
 	private boolean roomLabel = false;
 	private boolean roomCenter = false;
 	private char secretPassage;
 	private Set<BoardCell> adjList = new HashSet<>();
-	private String roomName = "";
-	
+	private String roomName = "";	
+	private double cellLength = 0.0;
+	private Color color;
 
 	public BoardCell(int row, int col) { 
 		super();
@@ -118,7 +124,6 @@ public class BoardCell{
 		this.adjList= adjList;
 	}
 	
-	
 	public String toString() {
 		return ("Row: "+row+", Col: "+col);		
 	}
@@ -129,6 +134,26 @@ public class BoardCell{
 	
 	public void setRoomName(String name) {
 		roomName = name;
+	}
+	
+	public void draw(Graphics g, int cellLength, int offset) {
+		int x = col * cellLength;
+		int y = row * cellLength;
+		g.fillRect(x, y, cellLength, cellLength);
+		if(!isRoom) {
+			g.drawRect(x, y, cellLength, cellLength);
+		}
+		if(isRoom)
+			g.setColor(Color.gray);
+		else if(isUnused)
+			g.setColor(Color.black);
+		else
+			g.setColor(Color.yellow);
+	}
+
+	public void setUnused(boolean b) {
+		this.isUnused = b;
+		
 	}
 	
 }

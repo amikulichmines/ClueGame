@@ -1,5 +1,31 @@
 Used Saros for pair programming
 
+
+
+commit b42f484fe2ea6649b431de3f828ebb9be5dff300
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Sun Nov 8 20:19:41 2020 -0700
+
+    Finished assignment
+
+commit 0f0b99e9757df2e6edb9149d8cc98770817e801f
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Sun Nov 8 20:18:20 2020 -0700
+
+    Switched from ComputerPlayer to HumanPlayer
+
+commit 6f3ea36f89622b7514a8ba87d5abb927cc6797a1
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Sun Nov 8 20:06:17 2020 -0700
+
+    Added color functionality to Player.java and Card.java
+
+commit bdff7c87d468cadbc9796044cb97eeb4845ec33d
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Sun Nov 8 20:04:50 2020 -0700
+
+    Set up CardsKnownPanel.java
+
 commit 1dc8deb20113d540596675d514399e2f4ee05cc3
 Author: amikulichmines <amikulich@mymail.mines.edu>
 Date:   Sun Nov 8 18:00:46 2020 -0700

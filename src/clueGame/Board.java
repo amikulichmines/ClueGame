@@ -11,9 +11,14 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Set;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import java.awt.Graphics;
 import java.io.*;
 
-public class Board {
+public class Board extends JPanel{
 
 	public static final int NUM_PLAYERS = 6;
 	private int numRows, numColumns;
@@ -203,7 +208,11 @@ public class Board {
 			cell.setInitial(roomKey);
 
 			if(roomKey == 'X') {
+				cell.setUnused(true);
 				cell.setOccupied(true);
+			}
+			else if(roomKey == 'H') {
+				// do nothing; hallways will be handled in a different function
 			} else {
 				// if the roomkey is a key of room dictionary
 				if(roomDictionary.containsKey(roomKey))
@@ -490,6 +499,18 @@ public class Board {
 	
 	public Set<BoardCell> getAdjList(int row, int col) {
 		return grid[row][col].getAdjList();
+	}
+	
+	public void paintComponent(Graphics g) {
+		JPanel p = new JPanel();
+		int offset=0; // for now
+		super.paintComponent(g);
+		int cellLength = p.getWidth()/numColumns;
+		for(int r=0; r<numRows; r++) { 		// rows
+			for(int c=0; c<numColumns; c++){		// columns
+				grid[r][c].draw(g, cellLength, offset);
+			}
+		}
 	}
 	
 	/*************************************************************************
