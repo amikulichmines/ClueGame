@@ -12,9 +12,12 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Graphics;
 import java.awt.Point;
@@ -31,7 +34,7 @@ public class Board extends JPanel{
 	private Map<Character,Room> roomDictionary = new HashMap<>(), spaceDictionary = new HashMap<>();
 	private	Map<String, String> peopleDictionary = new HashMap<>();
 	private ArrayList<String[]> tempGrid = new ArrayList<>();
-	private Set<Point> startingPoints = new HashSet<>();
+	private Point[] startingPoints = new Point[NUM_PLAYERS];
 	
 	private static Board theInstance = new Board();
 	
@@ -73,17 +76,59 @@ public class Board extends JPanel{
 			row = new BoardCell[numColumns];
 			for(int c=0; c<numColumns; c++){ 	// columns
 				row[c]= setupCell(r,c);
-				if (row[c])
 			}
 			grid[r]=row;
 		}
 		setupDoors();
 		setAdjLists();
+		setupStartingPoints();
 		setupPlayers();
+		setupStartingPoints2();
 		setupDeck(); 	
 		deal();		
 	}
+	private void setupStartingPoints() {
+		for (BoardCell[] cellRow : grid) {
+			for (BoardCell cell : cellRow) {
+				if(!cell.isRoom() && !cell.isUnused()) {	// if cell is valid starting point
+					int i;
+					for (i = 0; i < NUM_PLAYERS; i++) {		// find first open point in startingPoints
+						if (startingPoints[i] == null) {
+							startingPoints[i] = (new Point(cell.getCol(), cell.getRow()));
+							break;
+						}
+					}
+					if (i >= NUM_PLAYERS) {
+						return;
+					}
+				}
+			}
+		}
+	}
 	
+	public void setupStartingPoints2() {
+		boolean valid;
+		int row, col;
+		for (Player player : players) {
+			valid = false;
+			while(!valid) {
+				try {
+					col = ThreadLocalRandom.current().nextInt(0, numColumns);
+					row = ThreadLocalRandom.current().nextInt(0, numRows);
+					boolean room = !grid[row][col].isRoom();
+					boolean unused = !grid[row][col].isUnused();
+					assertTrue(room);
+					assertTrue(unused);
+					player.setRow(row);
+					player.setColumn(col);
+					valid=true;
+				} catch(AssertionError e){
+					
+				}	
+			}
+		}
+	}
+
 	// returns TRUE if each of the person, room, and weapon in the accusation are correct; else returns FALSE
 	public boolean checkAccusation(String person, String room, String weapon) {
 		return ((person.equals(theAnswer.getPerson().getCardName())) && room.equals(theAnswer.getRoom().getCardName()) && weapon.equals(theAnswer.getWeapon().getCardName()));
@@ -110,6 +155,7 @@ public class Board extends JPanel{
 		}
 		return null;
 	}
+
 	
 	// randomly pick the Solution cards and shuffle the remaining cards in the deck
 	public void setupDeck() {
@@ -166,12 +212,12 @@ public class Board extends JPanel{
 		int i = 0;
 		for (Map.Entry<String, String> it : peopleDictionary.entrySet()) {
 			if(i!=0) {
-				Player player = new ComputerPlayer(it.getKey(),0,0,it.getValue());
+				Player player = new ComputerPlayer(it.getKey(),(int)startingPoints[i].getY(),(int)startingPoints[i].getX(),it.getValue());
 				player.setPlayerIndex(i);
 				players.add(player);
 			}
 			else {
-				Player player = new HumanPlayer(it.getKey(),0,0,it.getValue());
+				Player player = new HumanPlayer(it.getKey(),(int)startingPoints[i].getY(),(int)startingPoints[i].getX(),it.getValue());
 				player.setPlayerIndex(i);
 				players.add(player);
 			}

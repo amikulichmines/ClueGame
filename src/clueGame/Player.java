@@ -125,10 +125,15 @@ public abstract class Player extends JPanel {
 		int x = column * cellLength;
 		int y = row * cellLength;
 		g.setColor(this.color);
-		g.drawOval(x, x, cellLength, cellLength);
+		g.fillOval(x, y, cellLength, cellLength);
 	}
 
-	
+	public void setRow(int row) {
+		this.row = row;
+	}
+	public void setColumn(int col) {
+		this.column = col;
+	}
 	public Set<Card> getSeenPeople() {
 		return seenPeople;
 	}

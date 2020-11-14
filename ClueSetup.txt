@@ -12,8 +12,8 @@ Room, Foyer, F
 Space, Hallway, H
 Space, Unused, X
 // People
-People, Professor Plum, purple
-People, Colonel Mustard, yellow
+People, Professor Plum, magenta
+People, Colonel Mustard, orange
 People, Miss Scarlet, red
 People, Mrs. White, white
 People, Reverend Green, green

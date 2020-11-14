@@ -167,5 +167,9 @@ public class BoardCell extends JPanel{
 	public int getCol() {
 		return col;
 	}
+
+	public boolean isUnused() {
+		return isUnused;
+	}
 	
 }
