@@ -136,24 +136,37 @@ public class BoardCell extends JPanel{
 		roomName = name;
 	}
 	
-	public void draw(Graphics g, int cellLength, int offset) {
+	public void draw(Graphics g, int cellLength) {
 		int x = col * cellLength;
 		int y = row * cellLength;
-		g.fillRect(x, y, cellLength, cellLength);
-		if(!isRoom) {
+		if(isRoom) {
+			g.setColor(Color.gray);
+			g.fillRect(x, y, cellLength, cellLength);
+		}
+		else if(isUnused) {
+			g.setColor(Color.black);
+			g.fillRect(x, y, cellLength, cellLength);
+		}
+		else {
+			g.setColor(Color.yellow);
+			g.fillRect(x, y, cellLength, cellLength);
+			g.setColor(Color.black);
 			g.drawRect(x, y, cellLength, cellLength);
 		}
-		if(isRoom)
-			g.setColor(Color.gray);
-		else if(isUnused)
-			g.setColor(Color.black);
-		else
-			g.setColor(Color.yellow);
+			
 	}
 
 	public void setUnused(boolean b) {
 		this.isUnused = b;
 		
+	}
+	
+	public int getRow() {
+		return row;
+	}
+	
+	public int getCol() {
+		return col;
 	}
 	
 }

@@ -25,6 +25,10 @@ public class ClueGUI extends JFrame{
 		add(gameControlPanel, BorderLayout.SOUTH);
 		cardsKnownPanel = new CardsKnownPanel(player);
 		add(cardsKnownPanel, BorderLayout.EAST);
+		board = Board.getInstance();
+		board.setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
+		board.initialize();
+		add(board, BorderLayout.CENTER);
 	}
 	
 	public static void main(String[] args) {

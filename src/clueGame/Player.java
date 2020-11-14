@@ -1,14 +1,17 @@
 package clueGame;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.swing.JPanel;
+
 import java.lang.reflect.Field;
 
-public abstract class Player {
+public abstract class Player extends JPanel {
 	protected int row, column, playerIndex;
 	private String name;//, colorName;
 	private Color color;
@@ -117,6 +120,14 @@ public abstract class Player {
 			color = null; // Not defined
 		}
 	}
+	
+	public void draw(Graphics g, int cellLength) {
+		int x = column * cellLength;
+		int y = row * cellLength;
+		g.setColor(this.color);
+		g.drawOval(x, x, cellLength, cellLength);
+	}
+
 	
 	public Set<Card> getSeenPeople() {
 		return seenPeople;

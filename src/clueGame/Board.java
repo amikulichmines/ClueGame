@@ -1,6 +1,7 @@
 package clueGame;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.io.*;
 
 public class Board extends JPanel{
@@ -501,15 +503,21 @@ public class Board extends JPanel{
 		return grid[row][col].getAdjList();
 	}
 	
+	@Override
 	public void paintComponent(Graphics g) {
-		JPanel p = new JPanel();
-		int offset=0; // for now
 		super.paintComponent(g);
-		int cellLength = p.getWidth()/numColumns;
+		int cellLength = this.getWidth()/numColumns;
 		for(int r=0; r<numRows; r++) { 		// rows
 			for(int c=0; c<numColumns; c++){		// columns
-				grid[r][c].draw(g, cellLength, offset);
+				grid[r][c].draw(g, cellLength);
 			}
+		}
+		Collection<Room> vals = roomDictionary.values();
+		for(Room room : roomDictionary.values()) {
+			room.draw(g, cellLength);
+		}
+		for(Player player : players) {
+			player.draw(g, cellLength);
 		}
 	}
 	
