@@ -158,7 +158,6 @@ public class BoardCell extends JPanel{
 
 	public void setUnused(boolean b) {
 		this.isUnused = b;
-		
 	}
 	
 	public int getRow() {

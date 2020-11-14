@@ -89,17 +89,17 @@ public class Room extends JPanel{
 			int y = door.getRow() * cellLength;
 			if(door.getDoorDirection()==DoorDirection.DOWN){
 				y+=cellLength;
-				g.fillRect(x, y, cellLength, cellLength/10);
+				g.fillRect(x, y, cellLength, cellLength/5);
 			}
 			if(door.getDoorDirection()==DoorDirection.UP){
-				g.fillRect(x, y, cellLength, cellLength/10);
+				g.fillRect(x, y-cellLength/5, cellLength, cellLength/5);
 			}
 			if(door.getDoorDirection()==DoorDirection.LEFT){
-				g.fillRect(x, y, cellLength/10, cellLength);
+				g.fillRect(x-cellLength/5, y, cellLength/5, cellLength);
 			}
 			if(door.getDoorDirection()==DoorDirection.RIGHT){
 				x+=cellLength;
-				g.fillRect(x, y, cellLength/10, cellLength);
+				g.fillRect(x, y, cellLength/5, cellLength);
 			}
 		}
 

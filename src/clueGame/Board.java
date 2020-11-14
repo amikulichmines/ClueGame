@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.*;
 
@@ -30,6 +31,8 @@ public class Board extends JPanel{
 	private Map<Character,Room> roomDictionary = new HashMap<>(), spaceDictionary = new HashMap<>();
 	private	Map<String, String> peopleDictionary = new HashMap<>();
 	private ArrayList<String[]> tempGrid = new ArrayList<>();
+	private Set<Point> startingPoints = new HashSet<>();
+	
 	private static Board theInstance = new Board();
 	
 	private Solution theAnswer;
@@ -70,6 +73,7 @@ public class Board extends JPanel{
 			row = new BoardCell[numColumns];
 			for(int c=0; c<numColumns; c++){ 	// columns
 				row[c]= setupCell(r,c);
+				if (row[c])
 			}
 			grid[r]=row;
 		}
@@ -213,9 +217,7 @@ public class Board extends JPanel{
 				cell.setUnused(true);
 				cell.setOccupied(true);
 			}
-			else if(roomKey == 'H') {
-				// do nothing; hallways will be handled in a different function
-			} else {
+			else {
 				// if the roomkey is a key of room dictionary
 				if(roomDictionary.containsKey(roomKey))
 					cell.setRoom(true);
