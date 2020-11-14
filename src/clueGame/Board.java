@@ -88,18 +88,18 @@ public class Board extends JPanel{
 		deal();		
 	}
 	private void setupStartingPoints() {
-		for (BoardCell[] cellRow : grid) {
+		for (BoardCell[] cellRow : grid) {					// check through all the cells
 			for (BoardCell cell : cellRow) {
 				if(!cell.isRoom() && !cell.isUnused()) {	// if cell is valid starting point
 					int i;
 					for (i = 0; i < NUM_PLAYERS; i++) {		// find first open point in startingPoints
-						if (startingPoints[i] == null) {
+						if (startingPoints[i] == null) {	// and add to startingPoints
 							startingPoints[i] = (new Point(cell.getCol(), cell.getRow()));
-							break;
+							break;							// move on to next cell after adding this one
 						}
 					}
-					if (i >= NUM_PLAYERS) {
-						return;
+					if (i >= NUM_PLAYERS) {					// if all the slots for starting locations have been filled
+						return;								// then exit this function (no need to go through remaining cells)
 					}
 				}
 			}
@@ -107,6 +107,8 @@ public class Board extends JPanel{
 	}
 	
 	public void setupStartingPoints2() {
+		// Sets a random row and column, if that is a valid place it places them
+		// If not, it tries again
 		boolean valid;
 		int row, col;
 		for (Player player : players) {
@@ -115,16 +117,12 @@ public class Board extends JPanel{
 				try {
 					col = ThreadLocalRandom.current().nextInt(0, numColumns);
 					row = ThreadLocalRandom.current().nextInt(0, numRows);
-					boolean room = !grid[row][col].isRoom();
-					boolean unused = !grid[row][col].isUnused();
-					assertTrue(room);
-					assertTrue(unused);
+					assertTrue(!grid[row][col].isRoom());
+					assertTrue(!grid[row][col].isUnused());
 					player.setRow(row);
 					player.setColumn(col);
 					valid=true;
-				} catch(AssertionError e){
-					
-				}	
+				} catch(AssertionError e){}	
 			}
 		}
 	}
