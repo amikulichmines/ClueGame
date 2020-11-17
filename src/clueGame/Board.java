@@ -22,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.*;
 
 public class Board extends JPanel{
@@ -31,8 +33,8 @@ public class Board extends JPanel{
 	private String layoutConfigFile = "", setupConfigFile = "", loggerFile = "";
 	private BoardCell [][] grid;
 	private Set<BoardCell> targets;
-	private Map<Character,Room> roomDictionary = new HashMap<>(), spaceDictionary = new HashMap<>();
-	private	Map<String, String> peopleDictionary = new HashMap<>();
+	private Map<Character,Room> roomDictionary = new HashMap<>(), spaceDictionary = new HashMap<>(); // Key: Room/Space char; value: Room/Space object
+	private	Map<String, String> peopleDictionary = new HashMap<>(); // Key: person, value: color
 	private ArrayList<String[]> tempGrid = new ArrayList<>();
 	private Point[] startingPoints = new Point[NUM_PLAYERS];
 	
@@ -46,6 +48,7 @@ public class Board extends JPanel{
 	private LinkedHashSet<Card> rooms;
 	private Iterator<Card> topCard;
 	
+	private Player currentPlayer;
 	
 	private Board(){
 		super();
@@ -210,12 +213,13 @@ public class Board extends JPanel{
 		int i = 0;
 		for (Map.Entry<String, String> it : peopleDictionary.entrySet()) {
 			if(i!=0) {
-				Player player = new ComputerPlayer(it.getKey(),(int)startingPoints[i].getY(),(int)startingPoints[i].getX(),it.getValue());
+				ComputerPlayer player = new ComputerPlayer(it.getKey(),0,0,it.getValue());
 				player.setPlayerIndex(i);
 				players.add(player);
+				currentPlayer = player;
 			}
 			else {
-				Player player = new HumanPlayer(it.getKey(),(int)startingPoints[i].getY(),(int)startingPoints[i].getX(),it.getValue());
+				HumanPlayer player = new HumanPlayer(it.getKey(),0,0,it.getValue());
 				player.setPlayerIndex(i);
 				players.add(player);
 			}
@@ -566,6 +570,91 @@ public class Board extends JPanel{
 			player.draw(g, cellLength);
 		}
 	}
+	
+	ArrayList<String> getPeopleNames() {
+		// Gets a randomized arrayList of people
+		ArrayList<String> peopleNames = new ArrayList<>();
+		for(String person : peopleDictionary.keySet()) {
+			peopleNames.add(person);
+		}
+		Collections.shuffle(peopleNames);
+		return peopleNames;
+	}
+	
+
+	public void setCurrentPlayer(Player player) {
+		currentPlayer = player;
+	}
+	
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
+	
+	private class MoveListener implements MouseListener {
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			// If current player is ComputerPlayer, do nothing
+			if (currentPlayer instanceof ComputerPlayer) {
+				return;
+			}
+			else {
+				// Check if mouse is in a proper target
+				BoardCell whichCell = null;
+				for (int i = 0; i < grid.length; i++) {
+					for (int j = 0; j < grid[i].length; j++) {
+						// have BoardCell tell if the mouse is in it
+						if (grid[i][j].contains(getMousePosition())) {
+							whichCell = grid[i][j];
+							break;
+						}
+					}
+					if (whichCell != null) {
+						break;
+					}
+				}
+				// if BoardCell is a valid target, perform move
+				if (targets.contains(whichCell)) {
+					// move player location
+					currentPlayer.move(whichCell.getCol(), whichCell.getRow());
+					// redraw board
+					
+				}
+				// if BoardCell is not valid target, display error message
+				else {
+					System.out.println("NOT A VALID TARGET");
+				}
+			}
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		
+	}
+	
 	
 	/*************************************************************************
 	 * For Testing

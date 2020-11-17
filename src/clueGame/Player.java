@@ -112,6 +112,11 @@ public abstract class Player extends JPanel {
 		return null;
 	}
 	
+	public void move(int col, int row) {
+		this.setColumn(col);
+		this.setRow(row);
+	}
+	
 	public void setColor(String colorName) {
 		try {
 		    Field field = Color.class.getField(colorName.toLowerCase());
@@ -126,6 +131,8 @@ public abstract class Player extends JPanel {
 		int y = row * cellLength;
 		g.setColor(this.color);
 		g.fillOval(x, y, cellLength, cellLength);
+		g.setColor(Color.black);
+		g.drawOval(x, y, cellLength, cellLength);
 	}
 
 	public void setRow(int row) {

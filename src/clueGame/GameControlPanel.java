@@ -2,6 +2,8 @@ package clueGame;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,13 +13,17 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-public class GameControlPanel extends JPanel {
+public class GameControlPanel extends JPanel implements ActionListener{
 	private JTextField theGuess = new JTextField(20);
 	private JTextField theResult = new JTextField(20), currentTurn;
 	private JTextField theRoll = new JTextField(5);
+	private JButton nextButton = new JButton("NEXT!"), accusationButton = new JButton("Make Accusation");
 	
-	public GameControlPanel()
+	private ClueGUI clueGUI;
+	
+	public GameControlPanel(ClueGUI clueGUI)
 	{
+		this.clueGUI = clueGUI;
 		setLayout(new GridLayout(2,0));
         createLayout();
 	}
@@ -63,11 +69,13 @@ public class GameControlPanel extends JPanel {
 
 
 	private JButton createAccusationButtonPanel() {
-		return new JButton("Make Accusation");
+		accusationButton.addActionListener(this);
+		return accusationButton;
 	}
 	
 	private JButton createNextButtonPanel() {
-		return new JButton("NEXT!");
+		nextButton.addActionListener(this);
+		return nextButton;
 	}
 	
 	private JPanel createTopBox() {
@@ -105,5 +113,19 @@ public class GameControlPanel extends JPanel {
 		this.currentTurn.setText(player.getName());
 		this.currentTurn.setBackground(player.getColor());
 		this.theRoll.setText(""+i);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		System.out.println("Button pressed");
+		if (e.getSource()==nextButton) {
+			// go to next turn
+			clueGUI.nextTurn(clueGUI);
+			System.out.println("NEXT button pressed");
+		}
+		if (e.getSource()==accusationButton) {
+			// make accusation
+			System.out.println("Accusation button pressed");
+		}
 	}
 }
