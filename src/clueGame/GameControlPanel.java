@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
@@ -117,16 +118,21 @@ public class GameControlPanel extends JPanel implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("Button pressed");
 		if (e.getSource()==nextButton) {
-			// go to next turn
-			
-			clueGUI.nextTurn(clueGUI);
-			System.out.println("NEXT button pressed");
+			// go to next turn if player has moved
+			if (clueGUI.currentPlayer.hasMoved == false) {
+				System.out.println("You need to move first");
+				Object[] options = {"OK"};
+				String message = "You need to move first";
+				JOptionPane.showOptionDialog(null, message, "Error",
+						JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+						null, options, options[0]);
+			} else {				
+				clueGUI.nextTurn(clueGUI);
+			}
 		}
 		if (e.getSource()==accusationButton) {
 			// make accusation
-			System.out.println("Accusation button pressed");
 		}
 	}
 }

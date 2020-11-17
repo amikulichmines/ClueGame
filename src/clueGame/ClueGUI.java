@@ -21,7 +21,8 @@ public class ClueGUI extends JFrame{
 	private static boolean isFinished= false;
 	private static ArrayList<Player> players = new ArrayList<>();
 	private static int turnNumber = 0;
-	private boolean validTurn=false;
+	boolean validTurn=false;
+	Player currentPlayer = players.get(turnNumber%players.size());;
 	
 
 	public ClueGUI(Player player) {
@@ -31,6 +32,7 @@ public class ClueGUI extends JFrame{
 }
 	
 	private static void showSplashScreen(String playerName) {
+		// Display the initial screen
 		Object[] options = {"OK"};
 		String message = "You are "+ playerName+". \nCan you find the solution\n"
 				+ "before the Computer players?";
@@ -40,6 +42,7 @@ public class ClueGUI extends JFrame{
 	}
 	
 	private void createLayout(Player player, ClueGUI clueGUI) {
+		// Set up all the panels
 		gameControlPanel = new GameControlPanel(clueGUI);
 		add(gameControlPanel, BorderLayout.SOUTH);
 		cardsKnownPanel = new CardsKnownPanel(player);
@@ -68,22 +71,19 @@ public class ClueGUI extends JFrame{
 		ArrayList<BoardCell>targets = new ArrayList(board.getTargets());
 		Collections.shuffle(targets);
 		BoardCell target = targets.get(0);
-//		board.getGrid()[player.getRow()][player.getColumn()].setOccupied(false);
 		player.move(target.getCol(), target.getRow());
-//		board.getGrid()[player.getRow()][player.getColumn()].setOccupied(true);
 		add(board, BorderLayout.CENTER);
 		this.repaint();
 	}
 	
 	private void humanTurn(ClueGUI clueGUI) {	
-		System.out.println("Human turn");
+		// Just show the available spots, let the board class
+		// take care of the movements.
+		currentPlayer.resetMoveStatus();
 		for (BoardCell target : board.getTargets()) {
 			target.setValidTarget(true);
 		}
 		this.repaint();
-		// player input cell
-		
-		// do not continue 
 	}
 	
 	private static int rollDice() {
@@ -91,7 +91,7 @@ public class ClueGUI extends JFrame{
 	}
 	
 	public void nextTurn(ClueGUI clueGUI) {
-		Player currentPlayer = players.get(turnNumber%players.size());
+		currentPlayer = players.get(turnNumber%players.size());
 		System.out.println("Current player "+currentPlayer.getName() + " location (" 
 				+ currentPlayer.getRow() + ", " + currentPlayer.getColumn()+")");
 		board.setCurrentPlayer(currentPlayer);
@@ -110,10 +110,6 @@ public class ClueGUI extends JFrame{
 
 		// Stop here until button is clicked
 	}
-	
-	private static void win() {}
-	
-	private static void lose() {}
 	
 
 	public static void main(String[] args) {

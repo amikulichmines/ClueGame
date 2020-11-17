@@ -20,6 +20,7 @@ public abstract class Player extends JPanel {
 	protected Set<Card> seenPeople = new HashSet<>(), seenRooms = new HashSet<>(), seenWeapons = new HashSet<>();
 	protected Set<Card> peopleInHand = new HashSet<>(), roomsInHand = new HashSet<>(), weaponsInHand = new HashSet<>();
 	protected Set<Card> unseen = new HashSet<>();
+	boolean hasMoved = true;
 	
 	
 	protected static Set<Card> people, rooms, weapons;
@@ -115,6 +116,7 @@ public abstract class Player extends JPanel {
 	public void move(int c, int r) {
 		this.setColumn(c);
 		this.setRow(r);
+		hasMoved = true;
 	}
 	
 	public void setColor(String colorName) {
@@ -129,6 +131,7 @@ public abstract class Player extends JPanel {
 	public void draw(Graphics g, int cellLength) {
 		int x = column * cellLength;
 		int y = row * cellLength;
+		// draw a filled circle of the player's color with a black outline
 		g.setColor(this.color);
 		g.fillOval(x, y, cellLength, cellLength);
 		g.setColor(Color.black);
@@ -191,6 +194,10 @@ public abstract class Player extends JPanel {
 	
 	public void setHand(Set<Card> hand) {
 		this.hand = hand;
+	}
+
+	public void resetMoveStatus() {
+		hasMoved = false;
 	}
 	
 }

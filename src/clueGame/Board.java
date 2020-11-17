@@ -523,7 +523,6 @@ public class Board extends JPanel implements MouseListener{
 			}
 		}
 		visited.remove(startCell);
-		
 	}
 	
 	
@@ -542,7 +541,6 @@ public class Board extends JPanel implements MouseListener{
 		}
 	}
 	
-
 	public Room getRoom(BoardCell cell) {
 		char roomKey = cell.getInitial();
 		if (roomDictionary.containsKey(roomKey)){
@@ -597,82 +595,60 @@ public class Board extends JPanel implements MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
 		// If current player is ComputerPlayer, do nothing
-		System.out.println("X: " + e.getX() + " Y: " + e.getY());
 		if (currentPlayer instanceof ComputerPlayer) {
 			return;
 		}
 		else {
-//			while(true) {
-				// Check if mouse is in a proper target
-				BoardCell whichCell = null;
-				int cellLength = this.getWidth()/numColumns;
-				for (int i = 0; i < grid.length; i++) {
-					for (int j = 0; j < grid[i].length; j++) {
-						// have BoardCell tell if the mouse is in it
-						if (grid[i][j].containsMouse(e.getX(), e.getY(), cellLength)) {
-							whichCell = grid[i][j];
-							System.out.println(whichCell);
-							break;
-						}
-					}
-					if (whichCell != null) {
+			// Check if mouse is in a proper target
+			BoardCell whichCell = null;
+			int cellLength = this.getWidth()/numColumns;
+			for (int i = 0; i < grid.length; i++) {
+				for (int j = 0; j < grid[i].length; j++) {
+					// have BoardCell tell if the mouse is in it
+					if (grid[i][j].containsMouse(e.getX(), e.getY(), cellLength)) {
+						whichCell = grid[i][j];
 						break;
 					}
 				}
-				// if BoardCell is a valid target, perform move
-				if (targets.contains(whichCell)) {
-					// move player location
-//					grid[currentPlayer.getRow()][currentPlayer.getColumn()].setOccupied(false);
-					currentPlayer.move(whichCell.getCol(), whichCell.getRow());
-//					grid[currentPlayer.getRow()][currentPlayer.getColumn()].setOccupied(true);
-					repaint();
-//					break;
-					// redraw board
-
+				if (whichCell != null) {
+					break;
 				}
-				// if BoardCell is not valid target, display error message
-				else {
-					System.out.println("NOT A VALID TARGET");
-					Object[] options = {"OK"};
-					String message = "Not a valid target. Please select a highlighted cell.";
-					JOptionPane.showOptionDialog(null, message, "Welcome to Clue",
-							JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-							null, options, options[0]);
+			}
+			// if BoardCell is a valid target, perform move
+			if (targets.contains(whichCell)) {
+				// move player location
+				currentPlayer.move(whichCell.getCol(), whichCell.getRow());
+				// redraw board
+				repaint();
+			}
+			// if BoardCell is not valid target, display error message
+			else {
+				System.out.println("NOT A VALID TARGET");
+				Object[] options = {"OK"};
+				String message = "Not a valid target. Please select a highlighted cell.";
+				JOptionPane.showOptionDialog(null, message, "Error",
+						JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+						null, options, options[0]);
 
-				}
-//			}
+			}
 		}
 	}
 
+	// Override the other abstract methods
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
-
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
-
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
-
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
-
-	
-	
 	
 	/*************************************************************************
 	 * For Testing
