@@ -2,6 +2,8 @@ package clueGame;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,8 +29,9 @@ public class BoardCell extends JPanel{
 	private char secretPassage;
 	private Set<BoardCell> adjList = new HashSet<>();
 	private String roomName = "";	
-	private double cellLength = 0.0;
+//	private double cellLength = 0.0;
 	private Color color;
+	private boolean validTarget = false;
 
 	public BoardCell(int row, int col) { 
 		super();
@@ -139,7 +142,14 @@ public class BoardCell extends JPanel{
 	public void draw(Graphics g, int cellLength) {
 		int x = col * cellLength;
 		int y = row * cellLength;
-		if(isRoom) {
+		if(validTarget) {
+			System.out.println("Valid target printed: (x: "+x+", y: "+y+")");
+			g.setColor(Color.green);
+			g.fillRect(x, y, cellLength, cellLength);
+			g.setColor(Color.black);
+			g.drawRect(x, y, cellLength, cellLength);
+		}
+		else if(isRoom) {
 			g.setColor(Color.gray);
 			g.fillRect(x, y, cellLength, cellLength);
 		}
@@ -170,6 +180,20 @@ public class BoardCell extends JPanel{
 
 	public boolean isUnused() {
 		return isUnused;
+	}
+	
+	public void setValidTarget(boolean b) {
+		this.validTarget = b;
+	}
+	
+	public boolean containsMouse(int clickX, int clickY, int cellLength) {
+		int xLoc = col*cellLength, yLoc = row*cellLength;
+		Rectangle cell = new Rectangle(xLoc, yLoc, cellLength, cellLength);
+		System.out.println("Rectangle: X:" + cell.x + " Y:" + cell.y + " CellLength: " + (cellLength));
+		if (cell.contains(new Point(clickX, clickY))) {
+			return true;
+		}
+		return false;
 	}
 	
 }

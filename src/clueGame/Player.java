@@ -112,9 +112,9 @@ public abstract class Player extends JPanel {
 		return null;
 	}
 	
-	public void move(int col, int row) {
-		this.setColumn(col);
-		this.setRow(row);
+	public void move(int c, int r) {
+		this.setColumn(c);
+		this.setRow(r);
 	}
 	
 	public void setColor(String colorName) {

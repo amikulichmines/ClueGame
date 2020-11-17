@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,7 +27,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.*;
 
-public class Board extends JPanel{
+public class Board extends JPanel implements MouseListener{
 
 	public static final int NUM_PLAYERS = 6;
 	private int numRows, numColumns;
@@ -88,7 +89,9 @@ public class Board extends JPanel{
 		setupPlayers();
 		setupStartingPoints2();
 		setupDeck(); 	
-		deal();		
+		deal();
+		
+		addMouseListener(this);
 	}
 	private void setupStartingPoints() {
 		for (BoardCell[] cellRow : grid) {					// check through all the cells
@@ -483,7 +486,7 @@ public class Board extends JPanel{
 	
 	public void calcTargets(BoardCell startCell, int pathlength) {
 		// This function acts as an entry point to the recursion
-		
+		setAdjLists();
 		targets = new HashSet<>();
 		// If we start in a room, get us out and then calculate targets.
 		Set<BoardCell> visited = new HashSet<>();
@@ -590,23 +593,27 @@ public class Board extends JPanel{
 		return players;
 	}
 	
-	private class MoveListener implements MouseListener {
 
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			// TODO Auto-generated method stub
-			// If current player is ComputerPlayer, do nothing
-			if (currentPlayer instanceof ComputerPlayer) {
-				return;
-			}
-			else {
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		// If current player is ComputerPlayer, do nothing
+		System.out.println("X: " + e.getX() + " Y: " + e.getY());
+		if (currentPlayer instanceof ComputerPlayer) {
+			return;
+		}
+		else {
+//			while(true) {
 				// Check if mouse is in a proper target
 				BoardCell whichCell = null;
+				int cellLength = this.getWidth()/numColumns;
 				for (int i = 0; i < grid.length; i++) {
 					for (int j = 0; j < grid[i].length; j++) {
 						// have BoardCell tell if the mouse is in it
-						if (grid[i][j].contains(getMousePosition())) {
+						if (grid[i][j].containsMouse(e.getX(), e.getY(), cellLength)) {
 							whichCell = grid[i][j];
+							System.out.println(whichCell);
 							break;
 						}
 					}
@@ -617,43 +624,54 @@ public class Board extends JPanel{
 				// if BoardCell is a valid target, perform move
 				if (targets.contains(whichCell)) {
 					// move player location
+//					grid[currentPlayer.getRow()][currentPlayer.getColumn()].setOccupied(false);
 					currentPlayer.move(whichCell.getCol(), whichCell.getRow());
+//					grid[currentPlayer.getRow()][currentPlayer.getColumn()].setOccupied(true);
+					repaint();
+//					break;
 					// redraw board
-					
+
 				}
 				// if BoardCell is not valid target, display error message
 				else {
 					System.out.println("NOT A VALID TARGET");
+					Object[] options = {"OK"};
+					String message = "Not a valid target. Please select a highlighted cell.";
+					JOptionPane.showOptionDialog(null, message, "Welcome to Clue",
+							JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+							null, options, options[0]);
+
 				}
-			}
+//			}
 		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		
 	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+
+	
 	
 	
 	/*************************************************************************

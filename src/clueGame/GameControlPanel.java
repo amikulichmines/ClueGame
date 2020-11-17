@@ -120,6 +120,7 @@ public class GameControlPanel extends JPanel implements ActionListener{
 		System.out.println("Button pressed");
 		if (e.getSource()==nextButton) {
 			// go to next turn
+			
 			clueGUI.nextTurn(clueGUI);
 			System.out.println("NEXT button pressed");
 		}

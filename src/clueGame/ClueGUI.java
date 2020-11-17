@@ -21,6 +21,7 @@ public class ClueGUI extends JFrame{
 	private static boolean isFinished= false;
 	private static ArrayList<Player> players = new ArrayList<>();
 	private static int turnNumber = 0;
+	private boolean validTurn=false;
 	
 
 	public ClueGUI(Player player) {
@@ -58,18 +59,31 @@ public class ClueGUI extends JFrame{
 		// move to random available target
 		// {handle suggestion}
 		// end turn (wait for human to click Next)
+		for(BoardCell[] row: board.getGrid()) {
+			for (BoardCell cell : row) {
+				cell.setValidTarget(false);
+			}
+		}
+		Player player = board.getPlayers().get(turnNumber%players.size());
 		ArrayList<BoardCell>targets = new ArrayList(board.getTargets());
 		Collections.shuffle(targets);
 		BoardCell target = targets.get(0);
-		board.getPlayers().get(turnNumber%players.size()).move(target.getCol(), target.getRow());
+//		board.getGrid()[player.getRow()][player.getColumn()].setOccupied(false);
+		player.move(target.getCol(), target.getRow());
+//		board.getGrid()[player.getRow()][player.getColumn()].setOccupied(true);
 		add(board, BorderLayout.CENTER);
 		this.repaint();
 	}
 	
 	private void humanTurn(ClueGUI clueGUI) {	
+		System.out.println("Human turn");
 		for (BoardCell target : board.getTargets()) {
-			target.
+			target.setValidTarget(true);
 		}
+		this.repaint();
+		// player input cell
+		
+		// do not continue 
 	}
 	
 	private static int rollDice() {
@@ -108,7 +122,7 @@ public class ClueGUI extends JFrame{
 		ClueGUI clueGUI = new ClueGUI(players.get(0));
 		clueGUI.createLayout(players.get(0), clueGUI);
 		showSplashScreen(players.get(0).getName());
-		clueGUI.nextTurn(clueGUI);		
+		clueGUI.nextTurn(clueGUI);
 	}
 
 }
