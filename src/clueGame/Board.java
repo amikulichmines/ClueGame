@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Graphics;
@@ -36,6 +37,7 @@ public class Board extends JPanel implements MouseListener{
 	private Set<BoardCell> targets;
 	private Map<Character,Room> roomDictionary = new HashMap<>(), spaceDictionary = new HashMap<>(); // Key: Room/Space char; value: Room/Space object
 	private	Map<String, String> peopleDictionary = new HashMap<>(); // Key: person, value: color
+	private Map<String, Player> playerDictionary = new HashMap<>();
 	private ArrayList<String[]> tempGrid = new ArrayList<>();
 	private Point[] startingPoints = new Point[NUM_PLAYERS];
 	
@@ -88,7 +90,7 @@ public class Board extends JPanel implements MouseListener{
 		setupStartingPoints();
 		setupPlayers();
 		setupStartingPoints2();
-		setupDeck(); 	
+		setupDeck(); 
 		deal();
 		
 		addMouseListener(this);
@@ -484,8 +486,11 @@ public class Board extends JPanel implements MouseListener{
 		this.setupConfigFile = txtFile;
 	}
 	
+	// This function acts as an entry point to the recursion
 	public void calcTargets(BoardCell startCell, int pathlength) {
-		// This function acts as an entry point to the recursion
+		// TODO: Finish editing for player movement
+		// Make the currentPlayer's space unoccupied for calculating targets
+		grid[currentPlayer.getRow()][currentPlayer.getColumn()].setOccupied(false);
 		setAdjLists();
 		targets = new HashSet<>();
 		// If we start in a room, get us out and then calculate targets.
@@ -500,6 +505,8 @@ public class Board extends JPanel implements MouseListener{
 		else {
 			recursivelyCalcTargets(startCell, pathlength, visited);
 		}
+		// set currentPlayer's location occupied again
+//		grid[currentPlayer.getRow()][currentPlayer.getColumn()].setOccupied(true);
 	}
 	
 	public void recursivelyCalcTargets(BoardCell startCell, int pathlength, Set<BoardCell> visited) {
@@ -556,6 +563,7 @@ public class Board extends JPanel implements MouseListener{
 	
 	@Override
 	public void paintComponent(Graphics g) {
+		ArrayList<String> playerList = new ArrayList<>();
 		super.paintComponent(g);
 		int cellLength = this.getWidth()/numColumns;
 		for(int r=0; r<numRows; r++) { 		// rows
@@ -568,7 +576,29 @@ public class Board extends JPanel implements MouseListener{
 			room.draw(g, cellLength);
 		}
 		for(Player player : players) {
-			player.draw(g, cellLength);
+			playerList.add(grid[player.getRow()][player.getColumn()].getRoomName());
+		}
+		// Draw the players, with logic to make sure you don't draw over anyone 
+		// else. This is only applicable to rooms.
+		Set<String> drawLocations = new HashSet<>();
+		for(Player player : players) {
+				int i = 0;
+				int[] drawLoc = {player.getRow(), player.getColumn()};
+				while(drawLocations.contains(""+drawLoc[0]+drawLoc[1])) {
+					i=(i+1)%6;
+					int rowAdjust=0;
+					int colAdjust = 0;
+					if (i==2||i==3||i==4)
+						rowAdjust = 1;
+					if (i==1||i==2)
+						colAdjust=1;
+					if(i==4||i==5)
+						colAdjust=-1;
+					drawLoc[0] = player.getRow() + rowAdjust;
+					drawLoc[1] = player.getColumn()+colAdjust;
+				}
+				drawLocations.add(""+drawLoc[0]+drawLoc[1]);
+				player.draw(g, cellLength, drawLoc[0], drawLoc[1]);
 		}
 	}
 	
@@ -617,14 +647,17 @@ public class Board extends JPanel implements MouseListener{
 			}
 			// if BoardCell is a valid target, perform move
 			if (targets.contains(whichCell)) {
+				// set current player's location unoccupied (in preparation for move)
+				grid[currentPlayer.row][currentPlayer.column].setOccupied(false);
 				// move player location
 				currentPlayer.move(whichCell.getCol(), whichCell.getRow());
+				// set current player's new location occupied
+				grid[currentPlayer.row][currentPlayer.column].setOccupied(true);
 				// redraw board
 				repaint();
 			}
 			// if BoardCell is not valid target, display error message
 			else {
-				System.out.println("NOT A VALID TARGET");
 				Object[] options = {"OK"};
 				String message = "Not a valid target. Please select a highlighted cell.";
 				JOptionPane.showOptionDialog(null, message, "Error",
@@ -633,6 +666,13 @@ public class Board extends JPanel implements MouseListener{
 
 			}
 		}
+	}
+	
+	public Map<String, Player> getPlayerDictionary(){
+		for (Player player : players) {
+			playerDictionary.put(player.getName(), player);
+		}
+		return playerDictionary;
 	}
 
 	// Override the other abstract methods
@@ -682,6 +722,38 @@ public class Board extends JPanel implements MouseListener{
 		return rooms;
 	}
 	
+	public Map<String, Room> getRoomDictionary(){
+		Map<String, Room> roomDictionaryByName = new HashMap<>();
+		for(Room room : roomDictionary.values()) {
+			roomDictionaryByName.put(room.getName(), room);
+		}
+		return roomDictionaryByName;
+	}
+	
+	public Map<String, Card> getAllRoomCardDictionary(){
+		Map<String, Card> allRooms = new HashMap<>();
+		for(Card room : rooms) {
+			allRooms.put(room.getCardName(), room);
+		}
+		return allRooms;
+	}
+	
+	public Map<String, Card> getAllPeopleCardDictionary(){
+		Map<String, Card> allPeople = new HashMap<>();
+		for(Card person : people) {
+			allPeople.put(person.getCardName(), person);
+		}
+		return allPeople;
+	}
+	
+	public Map<String, Card> getAllWeaponCardDictionary(){
+		Map<String, Card> allWeapons = new HashMap<>();
+		for(Card weapon : weapons) {
+			allWeapons.put(weapon.getCardName(), weapon);
+		}
+		return allWeapons;
+	}
+	
 	public Solution getSolution() {
 		return theAnswer;
 	}
@@ -692,6 +764,13 @@ public class Board extends JPanel implements MouseListener{
 	
 	public BoardCell[][] getGrid(){
 		return grid;
+	}
+
+	public void removePlayer(Player currentPlayer) {
+		if (this.currentPlayer.equals(currentPlayer)) {
+			players.remove(currentPlayer);
+			players.remove(this.currentPlayer);
+		}
 	}
 	
 }

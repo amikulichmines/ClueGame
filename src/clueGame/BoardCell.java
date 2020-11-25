@@ -1,7 +1,10 @@
 package clueGame;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.HashSet;
@@ -26,10 +29,9 @@ public class BoardCell extends JPanel{
 	private boolean isUnused = false;
 	private boolean roomLabel = false;
 	private boolean roomCenter = false;
-	private char secretPassage;
+	private char secretPassage = ' ';
 	private Set<BoardCell> adjList = new HashSet<>();
 	private String roomName = "";	
-//	private double cellLength = 0.0;
 	private Color color;
 	private boolean validTarget = false;
 
@@ -143,15 +145,25 @@ public class BoardCell extends JPanel{
 		int x = col * cellLength;
 		int y = row * cellLength;
 		if(validTarget) {
-			System.out.println("Valid target printed: (x: "+x+", y: "+y+")");
 			g.setColor(Color.green);
 			g.fillRect(x, y, cellLength, cellLength);
 			g.setColor(Color.black);
 			g.drawRect(x, y, cellLength, cellLength);
 		}
 		else if(isRoom) {
-			g.setColor(Color.gray);
-			g.fillRect(x, y, cellLength, cellLength);
+			if (this.secretPassage == ' ') {
+				g.setColor(Color.gray);
+				g.fillRect(x, y, cellLength, cellLength);
+			} else {
+				g.setColor(Color.pink);
+				g.fillRect(x, y, cellLength, cellLength);
+				Graphics2D g2d = (Graphics2D) g;
+				FontMetrics fontMetrics = g2d.getFontMetrics();
+				Font font = new Font("Serif", Font.PLAIN, 12);
+				g2d.setColor(Color.black);
+				g2d.setFont(font);
+				g2d.drawString(secretPassage+"", x+(fontMetrics.stringWidth(secretPassage+"")/2), y+cellLength/2+(fontMetrics.stringWidth(secretPassage+""))/2);
+			}
 		}
 		else if(isUnused) {
 			g.setColor(Color.black);
@@ -189,7 +201,7 @@ public class BoardCell extends JPanel{
 	public boolean containsMouse(int clickX, int clickY, int cellLength) {
 		int xLoc = col*cellLength, yLoc = row*cellLength;
 		Rectangle cell = new Rectangle(xLoc, yLoc, cellLength, cellLength);
-		System.out.println("Rectangle: X:" + cell.x + " Y:" + cell.y + " CellLength: " + (cellLength));
+		
 		if (cell.contains(new Point(clickX, clickY))) {
 			return true;
 		}

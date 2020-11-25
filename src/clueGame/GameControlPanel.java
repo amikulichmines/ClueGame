@@ -121,7 +121,6 @@ public class GameControlPanel extends JPanel implements ActionListener{
 		if (e.getSource()==nextButton) {
 			// go to next turn if player has moved
 			if (clueGUI.currentPlayer.hasMoved == false) {
-				System.out.println("You need to move first");
 				Object[] options = {"OK"};
 				String message = "You need to move first";
 				JOptionPane.showOptionDialog(null, message, "Error",
@@ -132,7 +131,7 @@ public class GameControlPanel extends JPanel implements ActionListener{
 			}
 		}
 		if (e.getSource()==accusationButton) {
-			// make accusation
+			clueGUI.promptForAccusation();
 		}
 	}
 }

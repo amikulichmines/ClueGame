@@ -1,6 +1,52 @@
-Used Saros for pair programming
+Used saros for pair programming
 
+commit b7038b7edeff4667d36af6791ae4aab2dd0fb6b5
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Mon Nov 16 23:08:19 2020 -0700
 
+    Finished the method that allows us to move the player
+
+commit d3158de5c996d2cccdb5a05d4ba265a27fb8b544
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Mon Nov 16 22:42:17 2020 -0700
+
+    Finished the highlighting function
+
+commit 1a713037036f90cdf5a9ec84783ffcf07b262026
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Mon Nov 16 21:00:13 2020 -0700
+
+    Updated it so the next button controls when it progresses
+
+commit a93d823c3ba0596219370f946fab507cf97b3daf
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Nov 13 22:04:13 2020 -0700
+
+    Added comments
+
+commit c942e543fba8b9d95bb29c4221eb816dd960c8a3
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Nov 13 22:00:52 2020 -0700
+
+    Added draw function to Room.java
+
+commit 09e2ff93749a775eaafd1eef385834b870f6e984
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Nov 13 20:29:51 2020 -0700
+
+    Added draw function to Player.java
+
+commit 8d95aaef37478684d08f683c25a707d7dbcbf351
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Nov 13 19:43:41 2020 -0700
+
+    Added draw to BoardCell
+
+commit 2815a685dd24b018e3ef305ff4d4afad60ce32c1
+Author: amikulichmines <amikulich@mymail.mines.edu>
+Date:   Fri Nov 13 17:52:27 2020 -0700
+
+    Set up new GUI class
 
 commit b42f484fe2ea6649b431de3f828ebb9be5dff300
 Author: amikulichmines <amikulich@mymail.mines.edu>

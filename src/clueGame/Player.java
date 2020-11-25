@@ -128,7 +128,8 @@ public abstract class Player extends JPanel {
 		}
 	}
 	
-	public void draw(Graphics g, int cellLength) {
+	public void draw(Graphics g, int cellLength, int row, int column) {
+		
 		int x = column * cellLength;
 		int y = row * cellLength;
 		// draw a filled circle of the player's color with a black outline
