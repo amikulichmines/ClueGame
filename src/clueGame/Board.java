@@ -722,6 +722,10 @@ public class Board extends JPanel implements MouseListener{
 		return rooms;
 	}
 	
+	public Solution getTheAnswer() {
+		return theAnswer;
+	}
+	
 	public Map<String, Room> getRoomDictionary(){
 		Map<String, Room> roomDictionaryByName = new HashMap<>();
 		for(Room room : roomDictionary.values()) {

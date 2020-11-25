@@ -20,8 +20,24 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class ClueGUI extends JFrame implements ActionListener{
+	
+	// Tests to test functionality. This should cover all the requirements
+	// To test one, set it at true and set all other tests to false.
+	// Note. This ONLY works with our 6 players.
+	
+	// Puts a computer player in a room, has it make suggestion.
+	public boolean MAKE_SUGGESTION_COMPUTER = true;
+	// Puts human in a room, has it show suggestion
+	public boolean MAKE_SUGGESTION_HUMAN = true;
+	// Make the computer give a true accusation
+	public boolean MAKE_ACCUSATION_COMPUTER_WIN = false;
+	// Make computer give false accusation
+	public boolean MAKE_ACCUSATION_COMPUTER_LOSE = false;
+	// Have the human make an accusation (note: tester must actually give it an accusation.)
+	public boolean MAKE_ACCUSATION_HUMAN = false;
+	// To make sure more than one person can fit
+	public boolean ROOM_DOUBLE_OCCUPANCY = true;
 
-	public boolean ROOM_DOUBLE_OCCUPANCY = true; 
 
 	private static GameControlPanel gameControlPanel;
 	private static CardsKnownPanel cardsKnownPanel;
@@ -34,7 +50,7 @@ public class ClueGUI extends JFrame implements ActionListener{
 	Player currentPlayer = players.get(turnNumber%players.size());
 
 	private JComboBox<String> personBox, roomBox, weaponBox;
-	private JButton accusationSubmitButton, accusationCancelButton, suggestionSubmitButton;
+	private JButton accusationSubmitButton, accusationCancelButton, suggestionSubmitButton, suggestionCancelButton;
 	private JPanel accusationGridPanel, suggestionGridPanel;
 	private JFrame accusationFrame, suggestionFrame;
 
@@ -71,29 +87,60 @@ public class ClueGUI extends JFrame implements ActionListener{
 
 	}
 
-	private void computerTurn(ClueGUI clueGUI, int dieRoll) {
+	private void computerTurn(int dieRoll) {
 		// update gameControlPanel
 		// {handle accusation}
 		// move to random available target
 		// {handle suggestion}
 		// end turn (wait for human to click Next)
+		
 		for(BoardCell[] row: board.getGrid()) {
 			for (BoardCell cell : row) {
 				cell.setValidTarget(false);
 			}
 		}
-		Player player = board.getPlayers().get(turnNumber%players.size());
+		currentPlayer = board.getPlayers().get(turnNumber%players.size());
+		if(currentPlayer.getProposedSolution() != null)
+			makeAccusation(currentPlayer.getProposedSolution());
 		ArrayList<BoardCell>targets = new ArrayList<>(board.getTargets());
 		Collections.shuffle(targets);
 		if(!targets.isEmpty()) {
 			BoardCell target = targets.get(0);
-			player.move(target.getCol(), target.getRow()); 
+			currentPlayer.move(target.getCol(), target.getRow()); 
 		}
 		add(board, BorderLayout.CENTER);
+		if(board.getGrid()[currentPlayer.getRow()][currentPlayer.getColumn()].isRoomCenter()) {
+			Solution proposedSolution = currentPlayer.createSuggestion(board.getGrid());
+			Card refutingCard = board.handleSuggestion(proposedSolution.person.getCardName(), proposedSolution.room.getCardName(), proposedSolution.weapon.getCardName(), currentPlayer);
+			if(refutingCard == null) {
+				currentPlayer.setProposedSolution(proposedSolution);
+			}else {
+				currentPlayer.updateSeen(refutingCard);
+			}
+		}
 		this.repaint();
 	}
+	
+	private void makeAccusation(Solution solution) {
+		if(board.checkAccusation(solution.person.getCardName(), solution.room.getCardName(), solution.weapon.getCardName())) {
+			// Display the initial screen
+			Object[] options = {"OK"};
+			String message = "Player " + currentPlayer.getName() + " has made the correct accusation and won! The solution was:\n Person: "+
+			solution.person.getCardName() + "\nRoom: "+solution.room.getCardName()+"\nWeapon: "+solution.weapon.getCardName();
+			JOptionPane.showOptionDialog(null, message, "Welcome to Clue",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+					null, options, options[0]);
+		}else {
+			// Display the initial screen
+			Object[] options = {"OK"};
+			String message = "Oh no! Player " + currentPlayer.getName() + " has made an incorrect accusation and lost!";
+			JOptionPane.showOptionDialog(null, message, "Welcome to Clue",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+					null, options, options[0]);
+		}
+	}
 
-	private void humanTurn(ClueGUI clueGUI) {	
+	private void humanTurn() {	
 		// Just show the available spots, let the board class
 		// take care of the movements.
 //		promptForAccusation();
@@ -134,8 +181,8 @@ public class ClueGUI extends JFrame implements ActionListener{
 		for(int i=0; i<choices.size();i++) {
 			choicesArray[i] = choices.get(i);
 		}
-		final JComboBox<String> peopleBox = new JComboBox<>(choicesArray);
-		panel4.add(peopleBox);
+		personBox = new JComboBox<>(choicesArray);
+		panel4.add(personBox);
 		suggestionGridPanel.add(panel4);
 
 		JPanel panel5 = new JPanel();
@@ -149,18 +196,18 @@ public class ClueGUI extends JFrame implements ActionListener{
 		for(int i=0; i<choices.size();i++) {
 			choicesArray[i] = choices.get(i);
 		}
-		final JComboBox<String> weaponsBox = new JComboBox<>(choicesArray);
-		panel6.add(weaponsBox);
+		weaponBox = new JComboBox<>(choicesArray);
+		panel6.add(weaponBox);
 		suggestionGridPanel.add(panel6);
 
 		JPanel panel7 = new JPanel();
-		JButton submitButton = new JButton("Submit");
-		panel7.add(submitButton);
+		suggestionSubmitButton = new JButton("Submit");
+		panel7.add(suggestionSubmitButton);
 		suggestionGridPanel.add(panel7);
 
 		JPanel panel8 = new JPanel();
-		JButton cancelButton = new JButton("Cancel");
-		panel8.add(cancelButton);
+		suggestionCancelButton = new JButton("Cancel");
+		panel8.add(suggestionCancelButton);
 		suggestionGridPanel.add(panel8);
 
 		suggestionFrame.add(suggestionGridPanel);
@@ -168,10 +215,10 @@ public class ClueGUI extends JFrame implements ActionListener{
 		suggestionFrame.setVisible(true);
 		
 		// Move a player to the center cell of the room that you selected
-		board.getPlayerDictionary().get(peopleBox.getSelectedItem())
+		board.getPlayerDictionary().get(personBox.getSelectedItem())
 		.setRow(board.getRoomDictionary().get(roomBox.getSelectedItem()).getCenterCell().getRow());
 		
-		board.getPlayerDictionary().get(peopleBox.getSelectedItem())
+		board.getPlayerDictionary().get(personBox.getSelectedItem())
 		.setColumn(board.getRoomDictionary().get(roomBox.getSelectedItem()).getCenterCell().getCol());
 
 	}
@@ -194,7 +241,7 @@ public class ClueGUI extends JFrame implements ActionListener{
 			choicesArray[i] = choices.get(i);
 		}
 		// Select room drop-down box
-		final JComboBox<String> roomBox = new JComboBox<>(choicesArray);
+		roomBox = new JComboBox<>(choicesArray);
 		panel2.add(roomBox);
 		accusationGridPanel.add(panel2);
 
@@ -210,8 +257,8 @@ public class ClueGUI extends JFrame implements ActionListener{
 		for(int i=0; i<choices.size();i++) {
 			choicesArray[i] = choices.get(i);
 		}
-		final JComboBox<String> peopleBox = new JComboBox<>(choicesArray);
-		panel4.add(peopleBox);
+		personBox = new JComboBox<>(choicesArray);
+		panel4.add(personBox);
 		accusationGridPanel.add(panel4);
 
 		JPanel panel5 = new JPanel();
@@ -225,8 +272,8 @@ public class ClueGUI extends JFrame implements ActionListener{
 		for(int i=0; i<choices.size();i++) {
 			choicesArray[i] = choices.get(i);
 		}
-		final JComboBox<String> weaponsBox = new JComboBox<>(choicesArray);
-		panel6.add(weaponsBox);
+		weaponBox = new JComboBox<>(choicesArray);
+		panel6.add(weaponBox);
 		accusationGridPanel.add(panel6);
 
 		JPanel panel7 = new JPanel();
@@ -263,10 +310,10 @@ public class ClueGUI extends JFrame implements ActionListener{
 		board.calcTargets(board.getCell(currentPlayer.getRow(), currentPlayer.getColumn()), dieRoll);
 		panel.setTurn(currentPlayer, dieRoll);
 		if(currentPlayer instanceof HumanPlayer) {
-			humanTurn(clueGUI);
+			humanTurn();
 		}
 		else {
-			computerTurn(clueGUI, dieRoll);
+			computerTurn(dieRoll);
 		}
 		turnNumber++;
 		clueGUI.setVisible(true);
@@ -288,7 +335,22 @@ public class ClueGUI extends JFrame implements ActionListener{
 			board.getPlayer(4).setColumn(board.getRoom('A').getCenterCell().getCol());
 			board.getPlayer(5).setRow(board.getRoom('A').getCenterCell().getRow());
 			board.getPlayer(5).setColumn(board.getRoom('A').getCenterCell().getCol());
+		} else if (MAKE_SUGGESTION_HUMAN){
+			board.getPlayer(0).setRow(board.getRoom('C').getCenterCell().getRow());
+			board.getPlayer(0).setColumn(board.getRoom('C').getCenterCell().getCol());
+			currentPlayer=board.getPlayers().get(0);
+			humanTurn();
+		}else if (MAKE_SUGGESTION_COMPUTER){
+			board.getPlayer(1).setRow(board.getRoom('C').getCenterCell().getRow());
+			board.getPlayer(1).setColumn(board.getRoom('C').getCenterCell().getCol());
+			currentPlayer=board.getPlayers().get(1);
+			computerTurn(4);
+		}else if (MAKE_ACCUSATION_COMPUTER_WIN) {
+			Solution solution = board.getTheAnswer();
+			
+			
 		}
+			
 	}
 
 
@@ -307,25 +369,44 @@ public class ClueGUI extends JFrame implements ActionListener{
 		// TODO Auto-generated method stub
 		
 		if (e.getSource()==accusationSubmitButton) {
+			// if the accusation is the solution
+			Object[] options = {"OK"};
+			String message = "", message2 = "";
 			if (board.checkAccusation(personBox.getSelectedItem().toString(), roomBox.getSelectedItem().toString(), weaponBox.getSelectedItem().toString())) {
+				
 				if (currentPlayer instanceof ComputerPlayer) {
 					// display message that a computer won
-				} else {
+					message = currentPlayer.getName() +" has solved the mystery! Better luck next time.";
+					message2 = "Game Over";
+				} else {	
 					// display human win message
+					message = "You solved the mystery! Congratulations!";
+					message2 = "Thanks for playing!";
 				}
-			} else {
+			} else {	// else if the accusation is wrong
 				if (currentPlayer instanceof ComputerPlayer) {
 					players.remove(currentPlayer);
 					board.removePlayer(currentPlayer);
 				} else {
 					// display human lose message
+					message = "Your accusation was wrong!";
+					message2 = "Game Over";
 				}
+			}
+			int x = JOptionPane.showOptionDialog(null, message, message2,
+					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+					null, options, options[0]);
+			// quits the game
+			if (x==0) {
+				this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 			}
 		} else if (e.getSource()==accusationCancelButton) {
 			accusationFrame.dispatchEvent(new WindowEvent(accusationFrame, WindowEvent.WINDOW_CLOSING));
 		} else if (e.getSource()==suggestionSubmitButton) {
-			
-		} else if (e.getSource()==)
+			currentPlayer.updateSeen(board.handleSuggestion(personBox.getSelectedItem().toString(), roomBox.getSelectedItem().toString(), weaponBox.getSelectedItem().toString(), currentPlayer));
+		} else if (e.getSource()==suggestionCancelButton) {
+			suggestionFrame.dispatchEvent(new WindowEvent(suggestionFrame, WindowEvent.WINDOW_CLOSING));
+		}
 	}
 
 }

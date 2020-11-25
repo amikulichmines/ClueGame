@@ -12,4 +12,11 @@ public class HumanPlayer extends Player{
 	public HumanPlayer(String name, int row, int column, String color) {
 		super(name, row, column, color);
 	}
+
+	@Override
+	protected Solution createSuggestion(BoardCell[][] grid) {
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
 }

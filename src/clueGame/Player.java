@@ -20,6 +20,7 @@ public abstract class Player extends JPanel {
 	protected Set<Card> seenPeople = new HashSet<>(), seenRooms = new HashSet<>(), seenWeapons = new HashSet<>();
 	protected Set<Card> peopleInHand = new HashSet<>(), roomsInHand = new HashSet<>(), weaponsInHand = new HashSet<>();
 	protected Set<Card> unseen = new HashSet<>();
+	protected Solution proposedSolution;
 	boolean hasMoved = true;
 	
 	
@@ -169,6 +170,14 @@ public abstract class Player extends JPanel {
 		return weaponsInHand;
 	}
 	
+	public void setProposedSolution(Solution solution) {
+		this.proposedSolution = solution;
+	}
+	
+	public Solution getProposedSolution() {
+		return proposedSolution;
+	}
+	
 	/**************************************************
 	 * For Testing
 	 **************************************************/
@@ -200,5 +209,7 @@ public abstract class Player extends JPanel {
 	public void resetMoveStatus() {
 		hasMoved = false;
 	}
+
+	protected abstract Solution createSuggestion(BoardCell[][] grid);
 	
 }
