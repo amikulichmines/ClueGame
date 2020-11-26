@@ -15,9 +15,9 @@ Space, Unused, X
 People, Professor Plum, magenta
 People, Colonel Mustard, orange
 People, Miss Scarlet, red
-People, Mrs. White, white
+People, Mrs White, white
 People, Reverend Green, green
-People, Mrs. Peacock, blue
+People, Mrs Peacock, blue
 //Weapons
 Weapon, Revolver
 Weapon, Dagger 

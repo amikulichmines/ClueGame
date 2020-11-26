@@ -68,21 +68,21 @@ public class CardsKnownPanel extends JPanel {
 	
 	private JPanel populatePanel(Set<Card> set) {
 		// Sets up panel and populates it with a for loop
-		JTextField thePerson;
+		JTextField theCard;
 		JPanel panel = new JPanel(new GridLayout(0,1));
 		if (set.isEmpty()) {
-			thePerson = new JTextField(20);
-			thePerson.setText("None");
-			thePerson.setEditable(false);
-			panel.add(thePerson);
+			theCard = new JTextField(20);
+			theCard.setText("None");
+			theCard.setEditable(false);
+			panel.add(theCard);
 		}
 		
 		else for (Card card : set) {
-			thePerson = new JTextField(20);
-			thePerson.setText(card.getCardName());
-			thePerson.setEditable(false);
-			thePerson.setBackground(card.getColor());
-			panel.add(thePerson);
+			theCard = new JTextField(20);
+			theCard.setText(card.getCardName());
+			theCard.setEditable(false);
+			theCard.setBackground(card.getColor());
+			panel.add(theCard);
 		}
 		return panel;
 	}

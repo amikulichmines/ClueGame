@@ -1,31 +1,43 @@
 package clueGame;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 public class GameControlPanel extends JPanel implements ActionListener{
-	private JTextField theGuess = new JTextField(20);
+	private JTextArea theGuess = new JTextArea(2,15);
 	private JTextField theResult = new JTextField(20), currentTurn;
 	private JTextField theRoll = new JTextField(5);
 	private JButton nextButton = new JButton("NEXT!"), accusationButton = new JButton("Make Accusation");
+	private String guess, result, filename;
+	private JPanel imagePanel;
 	
 	private ClueGUI clueGUI;
 	
-	public GameControlPanel(ClueGUI clueGUI)
+	public GameControlPanel(ClueGUI clueGUI, String filename)
 	{
+		this.filename=filename;
 		this.clueGUI = clueGUI;
 		setLayout(new GridLayout(2,0));
+		setPreferredSize(new Dimension(10000,200));
         createLayout();
 	}
 
@@ -33,6 +45,9 @@ public class GameControlPanel extends JPanel implements ActionListener{
 		// returns a panel with one entry
 		JPanel guessPanel = new JPanel();
 		guessPanel.setBorder(new TitledBorder (new EtchedBorder(), "Guess"));
+		theGuess.setEditable(false);
+		theGuess.setLineWrap(true);
+		theGuess.setWrapStyleWord(true);
 		guessPanel.add(theGuess);
 		return guessPanel;
 	}
@@ -48,12 +63,21 @@ public class GameControlPanel extends JPanel implements ActionListener{
 	
 	private JPanel createWhoseTurnPanel() {
 		// Makes a panel with two entries, the label and text
-		JPanel whoseTurnPanel = new JPanel(new GridLayout(4,0));
+		JPanel whoseTurnPanel = new JPanel(new GridLayout(1,2));
+		
+		JPanel labelAndName = new JPanel(new GridLayout(2,0));
 		JLabel whoseTurn = new JLabel("Whose turn?");
-		whoseTurnPanel.add(whoseTurn);
+		labelAndName.add(whoseTurn);
 		currentTurn = new JTextField(10);
 		currentTurn.setEditable(false);
-		whoseTurnPanel.add(currentTurn);
+		labelAndName.add(currentTurn);
+		whoseTurnPanel.add(labelAndName);
+		
+		imagePanel = new ImagePanel(filename);
+		imagePanel.setSize(200, 200);
+		// put in the images //
+		
+		whoseTurnPanel.add(imagePanel);
 		return whoseTurnPanel;
 	}
 	
@@ -114,13 +138,49 @@ public class GameControlPanel extends JPanel implements ActionListener{
 		this.currentTurn.setText(player.getName());
 		this.currentTurn.setBackground(player.getColor());
 		this.theRoll.setText(""+i);
+		this.theGuess.setText(guess);
+		this.theResult.setText(result);
+	}
+	
+	public void setGuess(String person, String room, String weapon) {
+		guess = "Person: " + person + "\nRoom: " + room + "\nWeapon: " + weapon; 
+		this.theGuess.setText(guess);
+	}
+	
+	public void setGuess(Solution solution) {
+		guess = "Person: " + solution.person.getCardName() + "\nRoom: " + solution.room.getCardName() + "\nWeapon: " + solution.weapon.getCardName(); 
+		this.theGuess.setText(guess);
+	}
+	
+	public void setResult(boolean disproven) {
+		if(disproven) {
+			result="Disproven";
+			this.theResult.setText(result);
+			this.theResult.setBackground(Color.red);
+		} else {
+			result = "Was not disproven";
+			this.theResult.setText(result);
+			this.theResult.setBackground(Color.green);
+		}
+	}
+	
+	public void resetGuessAndResult() {
+		guess = "";
+		theGuess.setText(guess);
+		result = "";
+		theResult.setText(result);
+		theResult.setBackground(null);
+	}
+	
+	public void setFilename(String filename) {
+		this.filename=filename;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==nextButton) {
 			// go to next turn if player has moved
-			if (clueGUI.currentPlayer.hasMoved == false) {
+			if (clueGUI.currentPlayer.hasMoved() == false) {
 				Object[] options = {"OK"};
 				String message = "You need to move first";
 				JOptionPane.showOptionDialog(null, message, "Error",
@@ -131,7 +191,14 @@ public class GameControlPanel extends JPanel implements ActionListener{
 			}
 		}
 		if (e.getSource()==accusationButton) {
-			clueGUI.promptForAccusation();
+			if(clueGUI.currentPlayer instanceof ComputerPlayer || clueGUI.currentPlayer.hasMoved()) {
+				Object[] options = {"OK"};
+				String message = "Accusations can only be made at the start of your turn.";
+				JOptionPane.showOptionDialog(null, message, "Error",
+						JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+						null, options, options[0]);
+			}else {
+			clueGUI.promptForAccusation();}
 		}
 	}
 }

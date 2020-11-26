@@ -17,15 +17,6 @@ public class ComputerPlayer extends Player{
 		super(name, row, column, color);
 	}
 
-//	public void setColor(String colorName) {
-//		try {
-//		    Field field = Class.forName("java.awt.Color").getField(colorName.toLowerCase());
-//		    color = (Color)field.get(null);
-//		} catch (Exception e) {
-//		    color = null; // Not defined
-//		}
-//	}
-
 	public Solution createSuggestion(BoardCell[][] grid) {
 		// Starts off by making arrayLists of unseen objects. Unseen 
 		// contains all unseen things, so we need to break it apart

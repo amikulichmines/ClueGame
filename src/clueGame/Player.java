@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 
 public abstract class Player extends JPanel {
 	protected int row, column, playerIndex;
-	private String name;//, colorName;
+	private String name;
 	private Color color;
 	protected Set<Card> hand = new HashSet<>();
 	protected Set<Card> seen = new HashSet<>();
@@ -21,8 +21,9 @@ public abstract class Player extends JPanel {
 	protected Set<Card> peopleInHand = new HashSet<>(), roomsInHand = new HashSet<>(), weaponsInHand = new HashSet<>();
 	protected Set<Card> unseen = new HashSet<>();
 	protected Solution proposedSolution;
-	boolean hasMoved = true;
-	
+	private boolean hasMoved = true;
+
+	private boolean movedBySuggestion = false;
 	
 	protected static Set<Card> people, rooms, weapons;
 	
@@ -89,7 +90,11 @@ public abstract class Player extends JPanel {
 		seen.add(seenCard);
 		Card cardToRemove = null;
 		for(Card u : unseen){
-			if(u.getCardName().equals(seenCard.getCardName()))
+			if(u
+					.getCardName()
+					.equals(
+							seenCard
+							.getCardName()))
 				cardToRemove=u;
 		}
 		unseen.remove(cardToRemove);
@@ -176,6 +181,22 @@ public abstract class Player extends JPanel {
 	
 	public Solution getProposedSolution() {
 		return proposedSolution;
+	}
+	
+	public boolean hasMoved() {
+		return hasMoved;
+	}
+	
+	public void setHasMoved(boolean hasMoved) {
+		this.hasMoved = hasMoved;
+	}
+	
+	public boolean isMovedBySuggestion() {
+		return movedBySuggestion;
+	}
+	
+	public void setMovedBySuggestion(boolean movedBySuggestion) {
+		this.movedBySuggestion = movedBySuggestion;
 	}
 	
 	/**************************************************

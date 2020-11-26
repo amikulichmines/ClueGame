@@ -41,9 +41,11 @@ public class Board extends JPanel implements MouseListener{
 	private ArrayList<String[]> tempGrid = new ArrayList<>();
 	private Point[] startingPoints = new Point[NUM_PLAYERS];
 	
+	private Player currentPlayer;
+	private ClueGUI clueGUI;
 	private static Board theInstance = new Board();
 	
-	private Solution theAnswer;
+	protected Solution theAnswer;
 	private ArrayList<Player> players;
 	private LinkedHashSet<Card> deck;
 	private LinkedHashSet<Card> weapons;
@@ -51,7 +53,6 @@ public class Board extends JPanel implements MouseListener{
 	private LinkedHashSet<Card> rooms;
 	private Iterator<Card> topCard;
 	
-	private Player currentPlayer;
 	
 	private Board(){
 		super();
@@ -137,6 +138,8 @@ public class Board extends JPanel implements MouseListener{
 
 	// returns TRUE if each of the person, room, and weapon in the accusation are correct; else returns FALSE
 	public boolean checkAccusation(String person, String room, String weapon) {
+		System.out.println(person+", "+room+", "+weapon);
+		System.out.println(theAnswer.getPerson().getCardName()+", "+theAnswer.getRoom().getCardName()+", "+theAnswer.getWeapon().getCardName());
 		return ((person.equals(theAnswer.getPerson().getCardName())) && room.equals(theAnswer.getRoom().getCardName()) && weapon.equals(theAnswer.getWeapon().getCardName()));
 	}
 	
@@ -155,7 +158,7 @@ public class Board extends JPanel implements MouseListener{
 			// Checks if the player has a matching card, and returns a random one if they do
 			Card match = players.get(playerTracker).disproveSuggestion(suggestion);
 			if (match != null) {
-				match.setColor(player.getColor());
+				match.setColor(players.get(playerTracker).getColor());
 				return match;
 			}
 		}
@@ -219,12 +222,14 @@ public class Board extends JPanel implements MouseListener{
 		for (Map.Entry<String, String> it : peopleDictionary.entrySet()) {
 			if(i!=0) {
 				ComputerPlayer player = new ComputerPlayer(it.getKey(),0,0,it.getValue());
+				player.setAllCards(people, weapons, rooms);
 				player.setPlayerIndex(i);
 				players.add(player);
 				currentPlayer = player;
 			}
 			else {
 				HumanPlayer player = new HumanPlayer(it.getKey(),0,0,it.getValue());
+				player.setAllCards(people, weapons, rooms);
 				player.setPlayerIndex(i);
 				players.add(player);
 			}
@@ -488,7 +493,6 @@ public class Board extends JPanel implements MouseListener{
 	
 	// This function acts as an entry point to the recursion
 	public void calcTargets(BoardCell startCell, int pathlength) {
-		// TODO: Finish editing for player movement
 		// Make the currentPlayer's space unoccupied for calculating targets
 		grid[currentPlayer.getRow()][currentPlayer.getColumn()].setOccupied(false);
 		setAdjLists();
@@ -653,8 +657,18 @@ public class Board extends JPanel implements MouseListener{
 				currentPlayer.move(whichCell.getCol(), whichCell.getRow());
 				// set current player's new location occupied
 				grid[currentPlayer.row][currentPlayer.column].setOccupied(true);
+				// clear valid cells (the player will not be able to select a new cell after clicking a valid cell)
+				for (BoardCell cell : targets) {
+					cell.setValidTarget(false);
+					cell.repaint();
+				}
+				targets.clear();
 				// redraw board
 				repaint();
+				// if the player entered a room, prompt them for a suggestion
+				if (this.getGrid()[currentPlayer.getRow()][currentPlayer.getColumn()].isRoomCenter()) {
+					clueGUI.promptForSuggestion();
+				}
 			}
 			// if BoardCell is not valid target, display error message
 			else {
@@ -688,7 +702,9 @@ public class Board extends JPanel implements MouseListener{
 	@Override
 	public void mouseExited(MouseEvent e) {
 	}
-
+	public void setClueGUI(ClueGUI clueGUI) {
+		this.clueGUI = clueGUI;
+	}
 	
 	/*************************************************************************
 	 * For Testing
