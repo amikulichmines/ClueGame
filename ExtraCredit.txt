@@ -1,0 +1,19 @@
+For our extra credit, we decided to make the game themed to the 1985 movie. This
+includes two things:
+
+1. We added a method to play a .wav file of the opening theme song of the movie
+while the user plays, which loops until the game ends. This can be turned off 
+at the top of ClueGUI.java. We got inspiration from:
+
+https://www.geeksforgeeks.org/play-audio-file-using-java/
+
+And made it match what we needed.
+
+2. We added functionality to the game control panel to show the picture of the 
+corresponding character from the movie. If the user puts in different 
+character names, it doesn't show the image. We got inspiration from:
+
+https://stackoverflow.com/questions/299495/how-to-add-an-image-to-a-jpanel
+
+And also changed it to match what we needed by adding a new panel to the 
+frame and resizing it. 

@@ -186,7 +186,13 @@ public class GameControlPanel extends JPanel implements ActionListener{
 				JOptionPane.showOptionDialog(null, message, "Error",
 						JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
 						null, options, options[0]);
-			} else {				
+			} else if (clueGUI.currentPlayerIsInRoom() && clueGUI.currentPlayer.hasMadeSuggestion() == false && clueGUI.currentPlayer instanceof HumanPlayer){
+				Object[] options = {"OK"};
+				String message = "You need to make a suggestion first";
+				JOptionPane.showOptionDialog(null, message, "Error",
+						JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+						null, options, options[0]);
+			} else {
 				clueGUI.nextTurn(clueGUI);
 			}
 		}

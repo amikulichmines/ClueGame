@@ -30,7 +30,7 @@ import java.io.*;
 
 public class Board extends JPanel implements MouseListener{
 
-	public static final int NUM_PLAYERS = 6;
+	public static int NUM_PLAYERS = 6;
 	private int numRows, numColumns;
 	private String layoutConfigFile = "", setupConfigFile = "", loggerFile = "";
 	private BoardCell [][] grid;
@@ -654,7 +654,7 @@ public class Board extends JPanel implements MouseListener{
 				// set current player's location unoccupied (in preparation for move)
 				grid[currentPlayer.row][currentPlayer.column].setOccupied(false);
 				// move player location
-				currentPlayer.move(whichCell.getCol(), whichCell.getRow());
+				currentPlayer.move(whichCell.getRow(), whichCell.getCol());
 				// set current player's new location occupied
 				grid[currentPlayer.row][currentPlayer.column].setOccupied(true);
 				// clear valid cells (the player will not be able to select a new cell after clicking a valid cell)
@@ -742,7 +742,7 @@ public class Board extends JPanel implements MouseListener{
 		return theAnswer;
 	}
 	
-	public Map<String, Room> getRoomDictionary(){
+	public Map<String, Room> getRoomDictionaryByName(){
 		Map<String, Room> roomDictionaryByName = new HashMap<>();
 		for(Room room : roomDictionary.values()) {
 			roomDictionaryByName.put(room.getName(), room);

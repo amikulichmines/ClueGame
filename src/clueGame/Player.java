@@ -21,9 +21,7 @@ public abstract class Player extends JPanel {
 	protected Set<Card> peopleInHand = new HashSet<>(), roomsInHand = new HashSet<>(), weaponsInHand = new HashSet<>();
 	protected Set<Card> unseen = new HashSet<>();
 	protected Solution proposedSolution;
-	private boolean hasMoved = true;
-
-	private boolean movedBySuggestion = false;
+	private boolean hasMoved = true, movedBySuggestion = false, hasMadeSuggestion = false;
 	
 	protected static Set<Card> people, rooms, weapons;
 	
@@ -119,9 +117,15 @@ public abstract class Player extends JPanel {
 		return null;
 	}
 	
-	public void move(int c, int r) {
+	public void move(int r, int c) {
 		this.setColumn(c);
 		this.setRow(r);
+		hasMoved = true;
+	}
+	
+	public void move(BoardCell cell) {
+		this.setColumn(cell.getCol());
+		this.setRow(cell.getRow());
 		hasMoved = true;
 	}
 	
@@ -231,6 +235,13 @@ public abstract class Player extends JPanel {
 		hasMoved = false;
 	}
 
-	protected abstract Solution createSuggestion(BoardCell[][] grid);
+	public boolean hasMadeSuggestion() {
+		return hasMadeSuggestion;
+	}
 	
+	public void setMadeSuggestion(boolean flag) {
+		hasMadeSuggestion = flag;
+	}
+	
+	protected abstract Solution createSuggestion(BoardCell[][] grid);
 }

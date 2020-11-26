@@ -27,34 +27,40 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class ClueGUI extends JFrame /*implements ActionListener*/{
-	
+public class ClueGUI extends JFrame {
+	public boolean PLAY_MUSIC = false;
+
+	// ----------- TESTING ------------
+
 	// Tests to test functionality. This should cover all the requirements
 	// To test one, set it at true and set all other tests to false.
 	// Note. This ONLY works with our 6 players.
-	
-	public boolean PLAY_MUSIC = false;
-	
-	// ----------- TESTING ------------
+
 	// Puts a computer player in a room, has it make suggestion.
+	// Rubric criteria 1, 3, 4, 5
 	public boolean MAKE_SUGGESTION_COMPUTER = false;
 	// Puts human in a room, has it show suggestion
+	// Rubric criteria 2, 3, 4, 5
 	public boolean MAKE_SUGGESTION_HUMAN = false;
 	// Make the computer give a true accusation
+	// Rubric criteron 7
 	public boolean MAKE_ACCUSATION_COMPUTER_WIN = false;
 	// Make computer give false accusation
-	public boolean MAKE_ACCUSATION_COMPUTER_LOSE = true;
+	// Rubric criteria 7, 8
+	public boolean MAKE_ACCUSATION_COMPUTER_LOSE = false;
 	// Have the human make an accusation (note: tester must actually give it an accusation.)
+	// Rubric criteria 6,8
 	public boolean MAKE_ACCUSATION_HUMAN = false;
 	// To make sure more than one person can fit
-	public boolean ROOM_DOUBLE_OCCUPANCY = false;
+	public boolean ROOM_DOUBLE_OCCUPANCY = true;
 
-	private int theDie;
+
+
+	private int theDieRoll;
 	private static GameControlPanel gameControlPanel;
 	private static CardsKnownPanel cardsKnownPanel;
 	private static Board board;
 	private static GameControlPanel panel;
-	private static boolean isFinished= false;
 	private static ArrayList<Player> players = new ArrayList<>();
 	private static int turnNumber = 0;
 	boolean validTurn=false;
@@ -70,7 +76,7 @@ public class ClueGUI extends JFrame /*implements ActionListener*/{
 		setSize(1050,750);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
-	
+
 	private static void showTestInstructions(String message) {
 		Object[] options = {"OK"};
 		JOptionPane.showOptionDialog(null, message, "Welcome to Clue",
@@ -104,29 +110,38 @@ public class ClueGUI extends JFrame /*implements ActionListener*/{
 	}
 
 	private void computerTurn() {
-		// update gameControlPanel
-		// {handle accusation}
-		// move to random available target
-		// {handle suggestion}
-		// end turn (wait for human to click Next)
-		
+		// prepare valid targets for the computer to move to
 		for(BoardCell[] row: board.getGrid()) {
 			for (BoardCell cell : row) {
 				cell.setValidTarget(false);
 			}
 		}
 		currentPlayer = board.getPlayers().get(turnNumber%players.size());
-		if(currentPlayer.getProposedSolution() != null)
-			makeAccusation(currentPlayer.getProposedSolution());
+		// handle accusation option
+		if(currentPlayer.getProposedSolution() != null) {
+			makeAccusation(currentPlayer.getProposedSolution()); 
+			return;
+		}
+		// move to random available target cell
 		ArrayList<BoardCell>targets = new ArrayList<>(board.getTargets());
 		Collections.shuffle(targets);
 		if(!targets.isEmpty()) {
 			BoardCell target = targets.get(0);
-			currentPlayer.move(target.getCol(), target.getRow()); 
+			currentPlayer.move(target.getRow(), target.getCol()); 
 		}
 		add(board, BorderLayout.CENTER);
-		if(playerInRoom()) {
+		// {handle suggestion}
+		if(currentPlayerIsInRoom()) {
 			Solution proposedSolution = currentPlayer.createSuggestion(board.getGrid());
+
+			// if the suggested player exists, move them to the room
+			Player suggestedPlayer = board.getPlayerDictionary().get(proposedSolution.person.getCardName());
+			if (board.getPlayers().contains(suggestedPlayer)) {
+				suggestedPlayer.move(board.getRoomDictionaryByName().get(proposedSolution.room.getCardName()).getCenterCell());
+				suggestedPlayer.setMovedBySuggestion(true);
+			}
+			repaint();
+			// update gameControlPanel display
 			gameControlPanel.setGuess(proposedSolution);
 			Card refutingCard = board.handleSuggestion(proposedSolution.person.getCardName(), proposedSolution.room.getCardName(), proposedSolution.weapon.getCardName(), currentPlayer);
 			if(refutingCard == null) {
@@ -138,48 +153,58 @@ public class ClueGUI extends JFrame /*implements ActionListener*/{
 			}
 		}
 		this.repaint();
+		currentPlayer.setMovedBySuggestion(false);
 	}
-	
+
 	private void makeAccusation(Solution solution) {
 		if(board.checkAccusation(solution.person.getCardName(), solution.room.getCardName(), solution.weapon.getCardName())) {
-			// Display the initial screen
+			// Display the result screen
 			Object[] options = {"OK"};
 			String message = "Player " + currentPlayer.getName() + " has made the correct accusation and won! The solution was:\nPerson: "+
-			solution.person.getCardName() + "\nRoom: "+solution.room.getCardName()+"\nWeapon: "+solution.weapon.getCardName();
-			JOptionPane.showOptionDialog(null, message, "Welcome to Clue",
+					solution.person.getCardName() + "\nRoom: "+solution.room.getCardName()+"\nWeapon: "+solution.weapon.getCardName();
+			int x = JOptionPane.showOptionDialog(null, message, "Clue",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
 					null, options, options[0]);
-		}else {
-			// Display the initial screen
+			if (x==0) {	// when the player presses OK, the game will close
+				this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+			}
+		} else {
+			// Display the results of the accusation
 			Object[] options = {"OK"};
-			String message = "Oh no! Player " + currentPlayer.getName() + " has made an incorrect accusation and lost!";
-			JOptionPane.showOptionDialog(null, message, "Welcome to Clue",
+			String message = "Oh no! Player " + currentPlayer.getName() + " has made an incorrect accusation and lost! They guessed:\n"
+					+ "Person: "+ solution.person.getCardName() + "\nRoom: "+solution.room.getCardName()+"\nWeapon: "+solution.weapon.getCardName();
+			// remove the computer player and update relative parameters
+			board.getPlayers().remove(currentPlayer);
+			players.remove(currentPlayer);
+			Board.NUM_PLAYERS--;
+
+			System.out.print(board.getPlayers());
+			JOptionPane.showOptionDialog(null, message, "Clue",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
 					null, options, options[0]);
 		}
 	}
 
 	private void humanTurn() {	
-		// Just show the available spots, let the board class
-		// take care of the movements.
 		currentPlayer.resetMoveStatus();
+		// Just show the available spots, let the board class take care of the movements.
 		for (BoardCell target : board.getTargets()) {
 			target.setValidTarget(true);
 		}
-		if (board.getTargets().isEmpty()) {
-			currentPlayer.setHasMoved(true);
+		if (board.getTargets().isEmpty()) {	
+			currentPlayer.setHasMoved(true);	// this is to prevent an error flag when there are no movement options for the player
 		}
 		this.repaint();
-		if (currentPlayer.hasMoved()==false && currentPlayer.isMovedBySuggestion()==true && playerInRoom()) {
-			promptForSuggestion();
+		if (!currentPlayer.hasMoved() && currentPlayer.isMovedBySuggestion() && currentPlayerIsInRoom() && currentPlayer instanceof HumanPlayer) {
+			promptForSuggestion();	// to handle when the player starts in a room by someone else's suggestion
 		}
+		currentPlayer.setMovedBySuggestion(false);
 	}
-	
-	
-	private boolean playerInRoom() {
+
+	boolean currentPlayerIsInRoom() {
 		return board.getGrid()[currentPlayer.getRow()][currentPlayer.getColumn()].isRoomCenter();
 	}
-	
+
 	void promptForSuggestion() {
 		suggestionFrame = new JFrame("Make a suggestion");
 		suggestionFrame.setSize(400, 200);
@@ -191,6 +216,7 @@ public class ClueGUI extends JFrame /*implements ActionListener*/{
 		suggestionGridPanel.add(panel1);
 
 		JPanel panel2 = new JPanel();
+		// The room is decided by where the player is; no combo box needed
 		JLabel currentRoom = new JLabel(board.getGrid()[currentPlayer.getRow()][currentPlayer.getColumn()].getRoomName());
 		panel2.add(currentRoom);
 		suggestionGridPanel.add(panel2);
@@ -201,7 +227,7 @@ public class ClueGUI extends JFrame /*implements ActionListener*/{
 		suggestionGridPanel.add(panel3);
 
 		JPanel panel4 = new JPanel();
-		// Gather available people as Strings into array
+		// Gather available people as Strings into array, in preparation to make the combo box
 		ArrayList<String> choices = new ArrayList<>(board.getAllPeopleCardDictionary().keySet());
 		String [] choicesArray = new String[choices.size()];
 		for(int i=0; i<choices.size();i++) {
@@ -217,6 +243,7 @@ public class ClueGUI extends JFrame /*implements ActionListener*/{
 		suggestionGridPanel.add(panel5);
 
 		JPanel panel6 = new JPanel();
+		// Similarly, gather available weapons into an array for the combo box
 		choices = new ArrayList<>(board.getAllWeaponCardDictionary().keySet());
 		choicesArray = new String[choices.size()];
 		for(int i=0; i<choices.size();i++) {
@@ -233,6 +260,17 @@ public class ClueGUI extends JFrame /*implements ActionListener*/{
 				String personSuggest = personBox.getSelectedItem().toString();
 				String roomSuggest = board.getGrid()[currentPlayer.getRow()][currentPlayer.getColumn()].getRoomName();
 				String weaponSuggest = weaponBox.getSelectedItem().toString();
+
+				// Move suggested player to the suggested room (if they still are in the game)
+				Player playerToMove = board.getPlayerDictionary().get(personSuggest);
+				if (playerToMove!=null) {
+					playerToMove.move(board.getRoomDictionaryByName().get(roomSuggest).getCenterCell());
+				}
+				repaint();
+
+				// Flag that the player made a suggestion
+				currentPlayer.setMadeSuggestion(true);
+
 				// Display suggestion in gameControlPanel
 				gameControlPanel.setGuess(personSuggest, roomSuggest, weaponSuggest);
 				Card seenCard = board.handleSuggestion(personSuggest, roomSuggest, weaponSuggest, currentPlayer);
@@ -266,12 +304,9 @@ public class ClueGUI extends JFrame /*implements ActionListener*/{
 		// Move a player to the center cell of the room that you selected
 		board.getPlayerDictionary()
 		.get(personBox.getSelectedItem())
-		.setRow(board.getRoomDictionary()
+		.move(board.getRoomDictionaryByName()
 				.get(board.getGrid()[currentPlayer.getRow()][currentPlayer.getColumn()].getRoomName())
-				.getCenterCell().getRow());
-		
-		board.getPlayerDictionary().get(personBox.getSelectedItem())
-		.setColumn(board.getRoomDictionary()
+				.getCenterCell().getRow(), board.getRoomDictionaryByName()
 				.get(board.getGrid()[currentPlayer.getRow()][currentPlayer.getColumn()].getRoomName())
 				.getCenterCell().getCol());
 		suggestionFrame.setVisible(true);
@@ -288,7 +323,7 @@ public class ClueGUI extends JFrame /*implements ActionListener*/{
 		accusationGridPanel.add(panel1);
 
 		JPanel panel2 = new JPanel();
-		// Gather available rooms as Strings into array
+		// Gather available rooms as Strings into array in preparation for combo box options
 		ArrayList<String> choices = new ArrayList<>(board.getAllRoomCardDictionary().keySet());
 		String [] choicesArray = new String[choices.size()];
 		for(int i=0; i<choices.size();i++) {
@@ -305,7 +340,7 @@ public class ClueGUI extends JFrame /*implements ActionListener*/{
 		accusationGridPanel.add(panel3);
 
 		JPanel panel4 = new JPanel();
-		// Gather available people as Strings into array
+		// Gather available people as Strings into array for combo box
 		choices = new ArrayList<>(board.getAllPeopleCardDictionary().keySet());
 		choicesArray = new String[choices.size()];
 		for(int i=0; i<choices.size();i++) {
@@ -321,6 +356,7 @@ public class ClueGUI extends JFrame /*implements ActionListener*/{
 		accusationGridPanel.add(panel5);
 
 		JPanel panel6 = new JPanel();
+		// Gather available weapons as Strings into array for combo box
 		choices = new ArrayList<>(board.getAllWeaponCardDictionary().keySet());
 		choicesArray = new String[choices.size()];
 		for(int i=0; i<choices.size();i++) {
@@ -347,130 +383,14 @@ public class ClueGUI extends JFrame /*implements ActionListener*/{
 				accusationFrame.dispatchEvent(new WindowEvent(accusationFrame, WindowEvent.WINDOW_CLOSING));
 			}
 		});
-		
+
 		panel8.add(accusationCancelButton);
 		accusationGridPanel.add(panel8);
 
 		accusationFrame.add(accusationGridPanel);
 
 		accusationFrame.setVisible(true);
-		
-	}
 
-	private void rollDice() {
-		theDie= ThreadLocalRandom.current().nextInt(0, 6) + 1;
-	}
-
-	public void nextTurn(ClueGUI clueGUI) {
-		gameControlPanel.resetGuessAndResult();
-		currentPlayer = players.get(turnNumber%players.size());
-		board.setCurrentPlayer(currentPlayer);
-		String filename = currentPlayer.getName()+".png";
-		remove(gameControlPanel);
-		gameControlPanel=new GameControlPanel(clueGUI, filename);
-		add(gameControlPanel, BorderLayout.SOUTH);
-		panel = clueGUI.gameControlPanel;
-		
-		rollDice();
-		
-		// making sure players occupy their spaces
-		for (Player player : players) {
-			board.getCell(player.getRow(), player.getColumn()).setOccupied(true);
-		}
-
-		board.calcTargets(board.getCell(currentPlayer.getRow(), currentPlayer.getColumn()), theDie);
-		panel.setTurn(currentPlayer, theDie);
-		if(currentPlayer instanceof HumanPlayer) {
-			humanTurn();
-			clueGUI.setVisible(true);
-			if(suggestionFrame!=null && currentPlayer.isMovedBySuggestion()==true && playerInRoom()) {
-				suggestionFrame.setVisible(true);
-			}
-		}
-		else {
-			computerTurn();
-			clueGUI.setVisible(true);
-		}
-		turnNumber++;
-		
-		// Stop here until button is clicked
-	}
-
-	public void tests() {
-		if(ROOM_DOUBLE_OCCUPANCY) {
-			board.getPlayer(0).setRow(board.getRoom('C').getCenterCell().getRow());
-			board.getPlayer(0).setColumn(board.getRoom('C').getCenterCell().getCol());
-			board.getPlayer(1).setRow(board.getRoom('C').getCenterCell().getRow());
-			board.getPlayer(1).setColumn(board.getRoom('C').getCenterCell().getCol());
-			board.getPlayer(2).setRow(board.getRoom('C').getCenterCell().getRow());
-			board.getPlayer(2).setColumn(board.getRoom('C').getCenterCell().getCol());
-			board.getPlayer(3).setRow(board.getRoom('A').getCenterCell().getRow());
-			board.getPlayer(3).setColumn(board.getRoom('A').getCenterCell().getCol());
-			board.getPlayer(4).setRow(board.getRoom('A').getCenterCell().getRow());
-			board.getPlayer(4).setColumn(board.getRoom('A').getCenterCell().getCol());
-			board.getPlayer(5).setRow(board.getRoom('A').getCenterCell().getRow());
-			board.getPlayer(5).setColumn(board.getRoom('A').getCenterCell().getCol());
-		} else if (MAKE_ACCUSATION_HUMAN){
-			showTestInstructions("Making the accusation: the preset answers in \n"
-					+ "'Make Accusation' are the correct answers.");
-			board.getPlayer(0).setRow(board.getRoom('C').getCenterCell().getRow());
-			board.getPlayer(0).setColumn(board.getRoom('C').getCenterCell().getCol());
-			currentPlayer=board.getPlayers().get(0);
-			Card personSolution = new Card("Professor Plum", CardType.PERSON);
-			Card roomSolution = new Card("Pantry", CardType.ROOM);
-			Card weaponSolution = new Card("Candlestick", CardType.WEAPON);
-			board.theAnswer = new Solution(personSolution, roomSolution, weaponSolution);
-			humanTurn();
-		}else if (MAKE_SUGGESTION_COMPUTER){
-			board.getPlayer(1).setRow(board.getRoom('C').getCenterCell().getRow());
-			board.getPlayer(1).setColumn(board.getRoom('C').getCenterCell().getCol());
-			currentPlayer=board.getPlayers().get(1);
-			computerTurn();
-		}else if (MAKE_ACCUSATION_COMPUTER_WIN) {
-			showTestInstructions("Computer accusation win. The window \ncomes up before the game window, fyi");
-			board.getPlayer(0).setRow(10);
-			board.getPlayer(0).setColumn(10);
-			currentPlayer=board.getPlayers().get(1);
-			makeAccusation(board.theAnswer);
-		}else if (MAKE_ACCUSATION_COMPUTER_LOSE) {
-			showTestInstructions("Computer accusation loss. This plugs in a random combo. \n"
-					+ "If it wins, you got lucky.");
-			board.getPlayer(0).setRow(10);
-			board.getPlayer(0).setColumn(10);
-			currentPlayer=board.getPlayers().get(1);
-			Card personSolution = new Card("Professor Plum", CardType.PERSON);
-			Card roomSolution = new Card("Pantry", CardType.ROOM);
-			Card weaponSolution = new Card("Candlestick", CardType.WEAPON);
-			makeAccusation(new Solution(personSolution, roomSolution, weaponSolution));
-		}
-			
-	}
-	
-	public static void clueTheme()  { 
-		Clip clip; 
-		AudioInputStream audioInputStream; 
-		String filePath = "ClueTheme.wav"; 
-		try {
-			audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
-			clip = AudioSystem.getClip();
-			clip.open(audioInputStream);
-			clip.loop(Clip.LOOP_CONTINUOUSLY); 
-		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-			e.printStackTrace();
-		} 
-	}
-
-	public static void main(String[] args) {
-		initializeBoard(); // initializes and sets up
-		players=board.getPlayers();
-		ClueGUI clueGUI = new ClueGUI(players.get(0));
-		board.setClueGUI(clueGUI);
-		clueGUI.tests();
-		clueGUI.createLayout(players.get(0), clueGUI);
-		showSplashScreen(players.get(0).getName());
-		if(clueGUI.PLAY_MUSIC)
-			clueTheme();
-		clueGUI.nextTurn(clueGUI);
 	}
 
 	private void accusationSubmitClicked() {
@@ -506,11 +426,134 @@ public class ClueGUI extends JFrame /*implements ActionListener*/{
 			this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 		}
 	}
-/*
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		// Action events are handled in their own frame
-	}*/
+
+	private void rollDice() {
+		theDieRoll = ThreadLocalRandom.current().nextInt(0, 6) + 1;
+	}
+
+	public void nextTurn(ClueGUI clueGUI) {
+		gameControlPanel.resetGuessAndResult();
+		currentPlayer = players.get(turnNumber%players.size());
+		currentPlayer.setMadeSuggestion(false);
+		board.setCurrentPlayer(currentPlayer);
+		String filename = currentPlayer.getName()+".png";		// for the images to display in gameControlPanel
+		remove(gameControlPanel);								// removing gameControlPanel and re-adding it to update its display
+		gameControlPanel = new GameControlPanel(clueGUI, filename);
+		add(gameControlPanel, BorderLayout.SOUTH);
+		panel = clueGUI.gameControlPanel;
+
+		rollDice();
+
+		// making sure players occupy their spaces
+		for (Player player : players) {
+			board.getCell(player.getRow(), player.getColumn()).setOccupied(true);
+		}
+
+		board.calcTargets(board.getCell(currentPlayer.getRow(), currentPlayer.getColumn()), theDieRoll);
+		panel.setTurn(currentPlayer, theDieRoll);
+		if(currentPlayer instanceof HumanPlayer) {
+			humanTurn();
+			clueGUI.setVisible(true);
+			if(suggestionFrame!=null && currentPlayer.isMovedBySuggestion()==true && currentPlayerIsInRoom()) {
+				suggestionFrame.setVisible(true);
+			}
+		}
+		else {
+			computerTurn();
+			clueGUI.setVisible(true);
+		}
+		turnNumber++;
+
+		// Stop here until button is clicked
+	}
+
+	public void tests() {
+		if(ROOM_DOUBLE_OCCUPANCY) {
+			board.getPlayer(0).setRow(board.getRoom('C').getCenterCell().getRow());
+			board.getPlayer(0).setColumn(board.getRoom('C').getCenterCell().getCol());
+			board.getPlayer(1).setRow(board.getRoom('C').getCenterCell().getRow());
+			board.getPlayer(1).setColumn(board.getRoom('C').getCenterCell().getCol());
+			board.getPlayer(2).setRow(board.getRoom('C').getCenterCell().getRow());
+			board.getPlayer(2).setColumn(board.getRoom('C').getCenterCell().getCol());
+			board.getPlayer(3).setRow(board.getRoom('A').getCenterCell().getRow());
+			board.getPlayer(3).setColumn(board.getRoom('A').getCenterCell().getCol());
+			board.getPlayer(4).setRow(board.getRoom('A').getCenterCell().getRow());
+			board.getPlayer(4).setColumn(board.getRoom('A').getCenterCell().getCol());
+			board.getPlayer(5).setRow(board.getRoom('A').getCenterCell().getRow());
+			board.getPlayer(5).setColumn(board.getRoom('A').getCenterCell().getCol());
+		} else if (MAKE_ACCUSATION_HUMAN){
+			showTestInstructions("Making the accusation: the preset answers in \n"
+					+ "'Make Accusation' are the correct answers.");
+			board.getPlayer(0).setRow(board.getRoom('C').getCenterCell().getRow());
+			board.getPlayer(0).setColumn(board.getRoom('C').getCenterCell().getCol());
+			currentPlayer=board.getPlayers().get(0);
+			Card personSolution = new Card("Professor Plum", CardType.PERSON);
+			Card roomSolution = new Card("Pantry", CardType.ROOM);
+			Card weaponSolution = new Card("Candlestick", CardType.WEAPON);
+			board.theAnswer = new Solution(personSolution, roomSolution, weaponSolution);
+			humanTurn();
+		} else if (MAKE_SUGGESTION_HUMAN){
+			showTestInstructions("Puts the human player right outside \ncookplace.");
+			board.getPlayer(0).setRow(6);
+			board.getPlayer(0).setColumn(4);
+
+		}else if (MAKE_ACCUSATION_COMPUTER_WIN) {
+			showTestInstructions("Computer accusation win. The window \ncomes up before the game window, fyi");
+			board.getPlayer(0).setRow(10);
+			board.getPlayer(0).setColumn(10);
+			currentPlayer=board.getPlayers().get(1);
+			makeAccusation(board.theAnswer);
+		}else if (MAKE_ACCUSATION_COMPUTER_LOSE) {
+			showTestInstructions("Computer accusation loss. This plugs in a random combo. \n"
+					+ "If it wins, you got lucky.");
+			board.getPlayer(0).setRow(10);
+			board.getPlayer(0).setColumn(10);
+			currentPlayer=board.getPlayers().get(1);
+			Card personSolution = new Card("Professor Plum", CardType.PERSON);
+			Card roomSolution = new Card("Pantry", CardType.ROOM);
+			Card weaponSolution = new Card("Candlestick", CardType.WEAPON);
+			makeAccusation(new Solution(personSolution, roomSolution, weaponSolution));
+		}else if (MAKE_SUGGESTION_COMPUTER) {
+			showTestInstructions("Makes the computer start off by moving into pantry.");
+			board.getPlayer(1).setRow(2);
+			board.getPlayer(1).setColumn(6);
+			board.getPlayer(2).setRow(3);
+			board.getPlayer(2).setColumn(6);
+			board.getPlayer(0).setRow(4);
+			board.getPlayer(0).setColumn(6);
+			board.getPlayer(3).setRow(1);
+			board.getPlayer(3).setColumn(6);
+			currentPlayer=board.getPlayers().get(1);
+		}
+	}
+
+	public static void clueTheme()  { 
+		Clip clip; 
+		AudioInputStream audioInputStream; 
+		String filePath = "ClueTheme.wav"; 
+		try {
+			audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
+			clip = AudioSystem.getClip();
+			clip.open(audioInputStream);
+			clip.loop(Clip.LOOP_CONTINUOUSLY); 
+		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+			e.printStackTrace();
+		} 
+	}
+
+	public static void main(String[] args) {
+		initializeBoard(); // initializes and sets up
+		players=board.getPlayers();
+		ClueGUI clueGUI = new ClueGUI(players.get(0));
+		board.setClueGUI(clueGUI);
+		clueGUI.tests();
+		clueGUI.createLayout(players.get(0), clueGUI);
+		showSplashScreen(players.get(0).getName());
+		if(clueGUI.PLAY_MUSIC)
+			clueTheme();
+		clueGUI.nextTurn(clueGUI);
+	}
+
+
 
 }
